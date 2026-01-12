@@ -100,7 +100,7 @@ export function Sidebar() {
         <div className="flex items-center justify-center gap-2 mb-1">
           <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" asChild>
             <a 
-              href="https://github.com/yourusername/org-designer" 
+              href="https://github.com/lukehau/aws-org-designer" 
               target="_blank" 
               rel="noopener noreferrer"
               aria-label="View on GitHub"
