@@ -17,9 +17,32 @@ interface PolicyBadgeProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 function PolicyBadge({ type, children, className, onRemove, removable = false, onClick, clickable = false, ...props }: PolicyBadgeProps) {
   const variants = {
-    rcp: "border-purple-300 bg-purple-100 text-purple-700 hover:bg-purple-300 hover:border-purple-500",
-    scp: "border-yellow-300 bg-yellow-100 text-yellow-800 hover:bg-yellow-300 hover:border-yellow-500",
+    rcp: {
+      backgroundColor: '#f3e8ff',
+      borderColor: '#d8b4fe',
+      color: '#7c3aed',
+    },
+    scp: {
+      backgroundColor: '#fef3c7',
+      borderColor: '#fde047',
+      color: '#a16207',
+    },
   }
+
+  const hoverStyles = {
+    rcp: {
+      backgroundColor: '#e9d5ff',
+      borderColor: '#c084fc',
+    },
+    scp: {
+      backgroundColor: '#fde68a',
+      borderColor: '#facc15',
+    },
+  }
+
+  const [isHovered, setIsHovered] = React.useState(false)
+
+  const currentStyle = isHovered ? { ...variants[type], ...hoverStyles[type] } : variants[type]
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent node selection
@@ -30,10 +53,12 @@ function PolicyBadge({ type, children, className, onRemove, removable = false, o
     <div
       className={cn(
         "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 whitespace-nowrap",
-        variants[type],
         clickable && "cursor-pointer hover:shadow-sm",
         className
       )}
+      style={currentStyle}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       onClick={clickable ? handleClick : undefined}
       {...props}
     >

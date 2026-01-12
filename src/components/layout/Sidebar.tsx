@@ -33,10 +33,10 @@ export function Sidebar() {
   }
 
   return (
-    <Card className="h-full rounded-none border-t-0 border-l-0 border-b-0 bg-background flex flex-col" data-tutorial-id="sidebar-card">
+    <Card className="h-full rounded-none border-t-0 border-l-0 border-b-0 flex flex-col" data-tutorial-id="sidebar-card">
       {/* Tab Navigation */}
-      <div className="border-b flex-shrink-0">
-        <div className="flex" role="tablist" aria-label="Sidebar navigation">
+      <div className="flex-shrink-0">
+        <div className="flex border-b" role="tablist" aria-label="Sidebar navigation">
           <button
             role="tab"
             data-tutorial-id="policy-library-tab"
@@ -46,9 +46,10 @@ export function Sidebar() {
             onClick={() => setActiveTab('policies')}
             onKeyDown={(e) => handleTabKeyDown(e, 'policies')}
             className={`flex-1 px-2 sm:px-3 py-3 text-xs font-medium border-b-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset ${activeTab === 'policies'
-                ? 'border-primary text-primary'
+                ? 'text-foreground'
                 : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
+            style={activeTab === 'policies' ? { borderBottomColor: 'hsl(var(--foreground))' } : { borderBottomColor: 'transparent' }}
           >
             Policy Library
           </button>
@@ -61,9 +62,10 @@ export function Sidebar() {
             onClick={() => setActiveTab('attachments')}
             onKeyDown={(e) => handleTabKeyDown(e, 'attachments')}
             className={`flex-1 px-2 sm:px-3 py-3 text-xs font-medium border-b-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset ${activeTab === 'attachments'
-                ? 'border-primary text-primary'
+                ? 'text-foreground'
                 : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
+            style={activeTab === 'attachments' ? { borderBottomColor: 'hsl(var(--foreground))' } : { borderBottomColor: 'transparent' }}
           >
             Attachments
           </button>
@@ -98,7 +100,7 @@ export function Sidebar() {
       {/* Footer */}
       <div className="flex-shrink-0 p-2">
         <div className="flex items-center justify-center gap-2 mb-1">
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" asChild>
+          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full [&_a]:text-foreground [&_a]:no-underline" asChild>
             <a 
               href="https://github.com/lukehau/aws-org-designer" 
               target="_blank" 

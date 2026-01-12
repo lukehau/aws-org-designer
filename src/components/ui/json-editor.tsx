@@ -99,7 +99,7 @@ export const JsonEditor = React.forwardRef<HTMLDivElement, JsonEditorProps>(
         ref={ref}
         id={id}
         className={cn(
-          'rounded-md border border-input bg-background',
+          'rounded-md border border-input bg-card',
           'focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
           disabled && 'cursor-not-allowed opacity-50',
           readOnly && 'cursor-default',

@@ -121,11 +121,11 @@ export const OrganizationNode = memo(({ data, selected }: NodeProps) => {
       case 'root':
         return 'bg-primary text-primary-foreground';
       case 'ou':
-        return 'bg-gray-200';
+        return 'bg-secondary';
       case 'account':
-        return 'bg-white border-gray-200 border-2';
+        return 'bg-card border-border border-2';
       default:
-        return 'bg-white border-gray-200 border-2';
+        return 'bg-card border-border border-2';
     }
   }, [node.type]);
 
@@ -322,11 +322,9 @@ export const OrganizationNode = memo(({ data, selected }: NodeProps) => {
             {node.type !== 'account' && (
               <div className="flex">
                 <Button
-                  variant="outline"
+                  variant={node.type === 'root' ? 'secondary' : 'outline'}
                   size="sm"
-                  className={`flex-1 text-xs h-5 sm:h-6 justify-center ${
-                    node.type === 'root' ? 'text-foreground hover:text-foreground' : ''
-                  }`}
+                  className="flex-1 text-xs h-5 sm:h-6 justify-center"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();

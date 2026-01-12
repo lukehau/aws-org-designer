@@ -72,13 +72,13 @@ export class ErrorBoundary extends Component<Props, State> {
 
       // Default error UI
       return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-950">
           <Card className="w-full max-w-2xl">
             <CardHeader className="text-center">
-              <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                <AlertTriangle className="w-6 h-6 text-red-600" />
+              <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-red-100 dark:bg-red-950/50 flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
               </div>
-              <CardTitle className="text-xl text-red-900">
+              <CardTitle className="text-xl text-red-900 dark:text-red-300">
                 Something went wrong
               </CardTitle>
               <CardDescription>
@@ -90,11 +90,11 @@ export class ErrorBoundary extends Component<Props, State> {
             <CardContent className="space-y-4">
               {/* Error details (in development) */}
               {import.meta.env.DEV && this.state.error && (
-                <div className="bg-gray-100 p-4 rounded-lg">
-                  <h4 className="font-semibold text-sm text-gray-900 mb-2">
+                <div className="bg-gray-100 dark:bg-gray-900 p-4 rounded-lg">
+                  <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-2">
                     Error Details (Development Mode)
                   </h4>
-                  <pre className="text-xs text-gray-700 overflow-auto max-h-40">
+                  <pre className="text-xs text-gray-700 dark:text-gray-300 overflow-auto max-h-40">
                     {this.state.error.toString()}
                     {this.state.errorInfo?.componentStack}
                   </pre>

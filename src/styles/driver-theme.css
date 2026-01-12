@@ -52,3 +52,34 @@
   color: #000000 !important;
   background-color: transparent !important;
 }
+
+/* Dark mode styles */
+.dark .driver-popover.tutorial-popover button {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.dark .driver-popover.tutorial-popover button:hover {
+  background-color: #e5e7eb !important;
+  color: #000000 !important;
+}
+
+.dark .driver-popover.tutorial-popover .driver-popover-prev-btn {
+  background-color: #1f2937 !important;
+  color: #ffffff !important;
+  border: 2px solid #374151 !important;
+}
+
+.dark .driver-popover.tutorial-popover .driver-popover-prev-btn:hover {
+  background-color: #374151 !important;
+  color: #ffffff !important;
+}
+
+.dark .driver-popover.tutorial-popover .driver-popover-close-btn {
+  color: #6b7280 !important;
+}
+
+.dark .driver-popover.tutorial-popover .driver-popover-close-btn:hover {
+  color: #ffffff !important;
+}

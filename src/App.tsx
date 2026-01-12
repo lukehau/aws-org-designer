@@ -4,6 +4,7 @@ import { Sidebar } from '@/components/layout/Sidebar'
 import { MainContent } from '@/components/layout/MainContent'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ErrorPanel } from '@/components/ErrorPanel'
+import { ThemeProvider } from '@/components/theme-provider'
 
 import { Toaster } from '@/components/ui/sonner'
 import { useAppStore } from '@/store'
@@ -119,66 +120,68 @@ function App() {
 
 
   return (
-    <ErrorBoundary onError={handleAppError}>
-      <div className="h-screen flex flex-col bg-background">
-        {/* Loading Screen - Removed: Now handled in MainContent */}
-        {/* Skip link for screen readers */}
-        <a 
-          href="#main-content" 
-          className="skip-link"
-          onFocus={(e) => e.currentTarget.scrollIntoView()}
-        >
-          Skip to main content
-        </a>
-        
-        {/* Header */}
-        <Header 
-          onToggleSidebar={toggleSidebar} 
-          sidebarOpen={sidebarOpen}
-        />
-        
-        {/* Main Layout */}
-        <div className="flex flex-1 overflow-hidden" data-tutorial-id="workspace-area">
-          {/* Sidebar - Responsive with overlay on mobile */}
-          <div className={`
-            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-            fixed inset-y-0 left-0 z-50 w-80 transition-transform duration-300 ease-in-out
-            lg:relative lg:translate-x-0 lg:z-auto
-            ${sidebarOpen ? 'lg:flex-shrink-0' : 'lg:w-0 lg:overflow-hidden'}
-          `}>
-            <ErrorBoundary onError={(error, errorInfo) => 
-              errorHandlingService.handleException(error, ErrorCategory.SYSTEM, ErrorSeverity.MEDIUM, { errorInfo, component: 'Sidebar' })
-            }>
-              <Sidebar />
-            </ErrorBoundary>
+    <ThemeProvider>
+      <ErrorBoundary onError={handleAppError}>
+        <div className="h-screen flex flex-col bg-background">
+          {/* Loading Screen - Removed: Now handled in MainContent */}
+          {/* Skip link for screen readers */}
+          <a 
+            href="#main-content" 
+            className="skip-link"
+            onFocus={(e) => e.currentTarget.scrollIntoView()}
+          >
+            Skip to main content
+          </a>
+          
+          {/* Header */}
+          <Header 
+            onToggleSidebar={toggleSidebar} 
+            sidebarOpen={sidebarOpen}
+          />
+          
+          {/* Main Layout */}
+          <div className="flex flex-1 overflow-hidden" data-tutorial-id="workspace-area">
+            {/* Sidebar - Responsive with overlay on mobile */}
+            <div className={`
+              ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+              fixed inset-y-0 left-0 z-50 w-80 transition-transform duration-300 ease-in-out
+              lg:relative lg:translate-x-0 lg:z-auto
+              ${sidebarOpen ? 'lg:flex-shrink-0' : 'lg:w-0 lg:overflow-hidden'}
+            `}>
+              <ErrorBoundary onError={(error, errorInfo) => 
+                errorHandlingService.handleException(error, ErrorCategory.SYSTEM, ErrorSeverity.MEDIUM, { errorInfo, component: 'Sidebar' })
+              }>
+                <Sidebar />
+              </ErrorBoundary>
+            </div>
+            
+            {/* Sidebar Overlay for mobile */}
+            {sidebarOpen && (
+              <div 
+                className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                onClick={toggleSidebar}
+                aria-hidden="true"
+              />
+            )}
+            
+            {/* Main Content Area */}
+            <main id="main-content" className="flex-1 min-w-0" role="main" aria-label="Organization visualization">
+              <ErrorBoundary onError={(error, errorInfo) => 
+                errorHandlingService.handleException(error, ErrorCategory.SYSTEM, ErrorSeverity.MEDIUM, { errorInfo, component: 'MainContent' })
+              }>
+                <MainContent />
+              </ErrorBoundary>
+            </main>
           </div>
-          
-          {/* Sidebar Overlay for mobile */}
-          {sidebarOpen && (
-            <div 
-              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-              onClick={toggleSidebar}
-              aria-hidden="true"
-            />
-          )}
-          
-          {/* Main Content Area */}
-          <main id="main-content" className="flex-1 min-w-0" role="main" aria-label="Organization visualization">
-            <ErrorBoundary onError={(error, errorInfo) => 
-              errorHandlingService.handleException(error, ErrorCategory.SYSTEM, ErrorSeverity.MEDIUM, { errorInfo, component: 'MainContent' })
-            }>
-              <MainContent />
-            </ErrorBoundary>
-          </main>
-        </div>
 
-        {/* Error Panel */}
-        <ErrorPanel />
-        
-        {/* Toast System */}
-        <Toaster />
-      </div>
-    </ErrorBoundary>
+          {/* Error Panel */}
+          <ErrorPanel />
+          
+          {/* Toast System */}
+          <Toaster />
+        </div>
+      </ErrorBoundary>
+    </ThemeProvider>
   )
 }
 

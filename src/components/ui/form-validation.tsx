@@ -131,18 +131,18 @@ export const FormValidationSummary: React.FC<FormValidationSummaryProps> = ({
   return (
     <div
       className={cn(
-        'border rounded-lg p-4 bg-red-50 border-red-200',
+        'border rounded-lg p-4 bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800',
         className
       )}
     >
       <div className="flex items-center gap-2 mb-3">
-        <AlertCircle className="w-5 h-5 text-red-600" />
-        <h4 className="font-medium text-red-900">{title}</h4>
+        <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
+        <h4 className="font-medium text-red-900 dark:text-red-300">{title}</h4>
       </div>
       
       {errors.length > 0 && (
         <div className="mb-3">
-          <ul className="list-disc list-inside space-y-1 text-sm text-red-700">
+          <ul className="list-disc list-inside space-y-1 text-sm text-red-700 dark:text-red-300">
             {errors.map((error, index) => (
               <li key={index}>{error}</li>
             ))}
@@ -187,8 +187,8 @@ export const ValidationStatus: React.FC<ValidationStatusProps> = ({
 }) => {
   if (isValidating) {
     return (
-      <div className={cn('flex items-center gap-2 text-sm text-gray-500', className)}>
-        <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+      <div className={cn('flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400', className)}>
+        <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 border-t-gray-600 dark:border-t-gray-300 rounded-full animate-spin" />
         <span>Validating...</span>
       </div>
     );
@@ -198,7 +198,7 @@ export const ValidationStatus: React.FC<ValidationStatusProps> = ({
     <div
       className={cn(
         'flex items-center gap-2 text-sm',
-        isValid ? 'text-green-600' : 'text-red-600',
+        isValid ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400',
         className
       )}
     >
