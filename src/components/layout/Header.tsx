@@ -3,7 +3,6 @@
  * Application header with title, navigation, and responsive mobile menu
  */
 
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Menu, X, Download, Upload, Trash2, Camera } from "lucide-react"
 import { AWSIcon } from "@/components/icons/aws-icons"
@@ -75,7 +74,7 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
   }
 
   return (
-    <Card className="rounded-none border-l-0 border-r-0 border-t-0">
+    <header className="border-b bg-card">
       <div className="px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 min-w-0">
@@ -171,6 +170,6 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
           </div>
         </div>
       </div>
-    </Card>
+    </header>
   )
 }

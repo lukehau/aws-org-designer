@@ -1,6 +1,5 @@
 import { useState } from "react"
 
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 import { useAppStore } from "@/store"
@@ -33,7 +32,7 @@ export function Sidebar() {
   }
 
   return (
-    <Card className="h-full rounded-none border-t-0 border-l-0 border-b-0 flex flex-col" data-tutorial-id="sidebar-card">
+    <aside className="h-full border-r bg-card flex flex-col" data-tutorial-id="sidebar-card">
       {/* Tab Navigation */}
       <div className="flex-shrink-0">
         <div className="flex border-b" role="tablist" aria-label="Sidebar navigation">
@@ -124,6 +123,6 @@ export function Sidebar() {
         </p>
       </div>
 
-    </Card>
+    </aside>
   )
 }
