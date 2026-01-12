@@ -1,0 +1,494 @@
+{
+  "version": "1.0.0",
+  "organization": {
+    "id": "org_sample",
+    "name": "Sample AWS Organization",
+    "rootId": "root_enterprise",
+    "nodes": {
+      "root_enterprise": {
+        "id": "root_enterprise",
+        "name": "Enterprise AWS Organization",
+        "type": "root",
+        "parentId": null,
+        "children": [
+          "ou_security",
+          "ou_workloads",
+          "ou_sandbox",
+          "ou_suspended"
+        ],
+        "position": {
+          "x": 1880,
+          "y": 20
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "ou_security": {
+        "id": "ou_security",
+        "name": "Security OU",
+        "type": "ou",
+        "parentId": "root_enterprise",
+        "children": [
+          "acc_log_archive",
+          "acc_audit",
+          "acc_security_tooling"
+        ],
+        "position": {
+          "x": 470,
+          "y": 220
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "ou_workloads": {
+        "id": "ou_workloads",
+        "name": "Workloads OU",
+        "type": "ou",
+        "parentId": "root_enterprise",
+        "children": [
+          "ou_production",
+          "ou_non_production",
+          "ou_shared_services"
+        ],
+        "position": {
+          "x": 2020,
+          "y": 220
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "ou_sandbox": {
+        "id": "ou_sandbox",
+        "name": "Sandbox OU",
+        "type": "ou",
+        "parentId": "root_enterprise",
+        "children": [
+          "acc_sandbox_dev1",
+          "acc_sandbox_dev2"
+        ],
+        "position": {
+          "x": 2950,
+          "y": 220
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "ou_suspended": {
+        "id": "ou_suspended",
+        "name": "Suspended OU",
+        "type": "ou",
+        "parentId": "root_enterprise",
+        "children": [
+          "node_1757310630244_rrxaqughw"
+        ],
+        "position": {
+          "x": 3570,
+          "y": 220
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_log_archive": {
+        "id": "acc_log_archive",
+        "name": "Log Archive Account",
+        "type": "account",
+        "parentId": "ou_security",
+        "children": [],
+        "position": {
+          "x": 20,
+          "y": 420
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_audit": {
+        "id": "acc_audit",
+        "name": "Audit Account",
+        "type": "account",
+        "parentId": "ou_security",
+        "children": [],
+        "position": {
+          "x": 330,
+          "y": 420
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_security_tooling": {
+        "id": "acc_security_tooling",
+        "name": "Security Tooling Account",
+        "type": "account",
+        "parentId": "ou_security",
+        "children": [],
+        "position": {
+          "x": 640,
+          "y": 420
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "ou_production": {
+        "id": "ou_production",
+        "name": "Production OU",
+        "type": "ou",
+        "parentId": "ou_workloads",
+        "children": [
+          "acc_prod_app1",
+          "acc_prod_app2"
+        ],
+        "position": {
+          "x": 950,
+          "y": 420
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "ou_non_production": {
+        "id": "ou_non_production",
+        "name": "Non-Production OU",
+        "type": "ou",
+        "parentId": "ou_workloads",
+        "children": [
+          "acc_staging",
+          "acc_dev",
+          "acc_test"
+        ],
+        "position": {
+          "x": 1880,
+          "y": 420
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "ou_shared_services": {
+        "id": "ou_shared_services",
+        "name": "Shared Services OU",
+        "type": "ou",
+        "parentId": "ou_workloads",
+        "children": [
+          "acc_network",
+          "acc_shared_services"
+        ],
+        "position": {
+          "x": 2500,
+          "y": 420
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_prod_app1": {
+        "id": "acc_prod_app1",
+        "name": "Prod 1",
+        "type": "account",
+        "parentId": "ou_production",
+        "children": [],
+        "position": {
+          "x": 935,
+          "y": 620
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_prod_app2": {
+        "id": "acc_prod_app2",
+        "name": "Prod 2",
+        "type": "account",
+        "parentId": "ou_production",
+        "children": [],
+        "position": {
+          "x": 1245,
+          "y": 620
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_staging": {
+        "id": "acc_staging",
+        "name": "Staging 1",
+        "type": "account",
+        "parentId": "ou_non_production",
+        "children": [],
+        "position": {
+          "x": 1570,
+          "y": 620
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_dev": {
+        "id": "acc_dev",
+        "name": "Dev 1",
+        "type": "account",
+        "parentId": "ou_non_production",
+        "children": [],
+        "position": {
+          "x": 1880,
+          "y": 620
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_test": {
+        "id": "acc_test",
+        "name": "Test 1",
+        "type": "account",
+        "parentId": "ou_non_production",
+        "children": [],
+        "position": {
+          "x": 2190,
+          "y": 620
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_network": {
+        "id": "acc_network",
+        "name": "Networking",
+        "type": "account",
+        "parentId": "ou_shared_services",
+        "children": [],
+        "position": {
+          "x": 2500,
+          "y": 620
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_shared_services": {
+        "id": "acc_shared_services",
+        "name": "Shared Services Account",
+        "type": "account",
+        "parentId": "ou_shared_services",
+        "children": [],
+        "position": {
+          "x": 2810,
+          "y": 620
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_sandbox_dev1": {
+        "id": "acc_sandbox_dev1",
+        "name": "Sandbox 1",
+        "type": "account",
+        "parentId": "ou_sandbox",
+        "children": [],
+        "position": {
+          "x": 2810,
+          "y": 420
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "acc_sandbox_dev2": {
+        "id": "acc_sandbox_dev2",
+        "name": "Sandbox 2",
+        "type": "account",
+        "parentId": "ou_sandbox",
+        "children": [],
+        "position": {
+          "x": 3120,
+          "y": 420
+        },
+        "metadata": {
+          "createdAt": "2024-01-01T00:00:00.000Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      },
+      "node_1757310630244_rrxaqughw": {
+        "id": "node_1757310630244_rrxaqughw",
+        "name": "Suspended 1",
+        "type": "account",
+        "parentId": "ou_suspended",
+        "children": [],
+        "position": {
+          "x": 3430,
+          "y": 420
+        },
+        "metadata": {
+          "createdAt": "2025-09-08T05:50:30.244Z",
+          "lastModified": "2025-09-08T05:50:34.023Z"
+        }
+      }
+    },
+    "limits": {
+      "maxAccounts": 10000,
+      "maxOUs": 2000,
+      "maxNestingLevels": 5,
+      "maxSCPsPerNode": 5,
+      "maxRCPsPerNode": 5,
+      "maxPolicySize": 5120
+    }
+  },
+  "policies": {
+    "scp_deny_root_access": {
+      "id": "scp_deny_root_access",
+      "name": "DenyRootUserAccess",
+      "type": "scp",
+      "content": "{}",
+      "description": "Prevents root user access across all accounts",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "lastModified": "2025-09-08T05:38:41.127Z"
+    },
+    "scp_deny_region_restriction": {
+      "id": "scp_deny_region_restriction",
+      "name": "RestrictRegions",
+      "type": "scp",
+      "content": "{}",
+      "description": "Restricts operations to approved regions only",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "lastModified": "2025-09-08T05:38:26.626Z"
+    },
+    "scp_production_protection": {
+      "id": "scp_production_protection",
+      "name": "ProductionProtection",
+      "type": "scp",
+      "content": "{}",
+      "description": "Prevents accidental deletion of critical production resources",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "lastModified": "2025-09-08T05:38:54.241Z"
+    },
+    "scp_sandbox_restrictions": {
+      "id": "scp_sandbox_restrictions",
+      "name": "SandboxRestrictions",
+      "type": "scp",
+      "content": "{}",
+      "description": "Limits sandbox accounts to small instance types and prevents org changes",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "lastModified": "2025-09-08T05:38:58.352Z"
+    },
+    "scp_security_baseline": {
+      "id": "scp_security_baseline",
+      "name": "SecurityBaseline",
+      "type": "scp",
+      "content": "{}",
+      "description": "Prevents disabling of security services like Config, CloudTrail, and GuardDuty",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "lastModified": "2025-09-08T05:39:03.521Z"
+    },
+    "scp_suspend_all": {
+      "id": "scp_suspend_all",
+      "name": "SuspendAllAccess",
+      "type": "scp",
+      "content": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Deny\", \"Action\": \"*\", \"Resource\": \"*\"}]}",
+      "description": "Denies all access - used for suspended accounts",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "lastModified": "2024-01-01T00:00:00.000Z"
+    },
+    "rcp_cross_account_restrictions": {
+      "id": "rcp_cross_account_restrictions",
+      "name": "CrossAccountRestrictions",
+      "type": "rcp",
+      "content": "{}",
+      "description": "Restricts cross-account access to organization members only",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "lastModified": "2025-09-08T05:39:30.027Z"
+    },
+    "default-scp-full-access": {
+      "id": "default-scp-full-access",
+      "name": "FullAWSAccess",
+      "type": "scp",
+      "content": "{\"Version\": \"2012-10-17\",\"Statement\": [{\"Effect\": \"Allow\",\"Action\": \"*\",\"Resource\": \"*\"}]}",
+      "createdAt": "2025-09-08T04:50:41.000Z",
+      "lastModified": "2025-09-08T04:50:41.000Z"
+    },
+    "default-rcp-full-access": {
+      "id": "default-rcp-full-access",
+      "name": "RCPFullAWSAccess",
+      "type": "rcp",
+      "content": "{\"Version\": \"2012-10-17\",\"Statement\": [{\"Effect\": \"Allow\",\"Principal\": \"*\",\"Action\": \"*\",\"Resource\": \"*\"}]}",
+      "createdAt": "2025-09-08T04:50:41.000Z",
+      "lastModified": "2025-09-08T04:50:41.000Z"
+    }
+  },
+  "policyAttachments": [
+    {
+      "policyId": "scp_deny_root_access",
+      "nodeId": "root_enterprise",
+      "attachedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "policyId": "scp_deny_region_restriction",
+      "nodeId": "ou_workloads",
+      "attachedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "policyId": "scp_security_baseline",
+      "nodeId": "ou_workloads",
+      "attachedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "policyId": "scp_production_protection",
+      "nodeId": "ou_production",
+      "attachedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "policyId": "scp_sandbox_restrictions",
+      "nodeId": "ou_sandbox",
+      "attachedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "policyId": "scp_suspend_all",
+      "nodeId": "ou_suspended",
+      "attachedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "policyId": "rcp_cross_account_restrictions",
+      "nodeId": "ou_workloads",
+      "attachedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "policyId": "default-scp-full-access",
+      "nodeId": "root_enterprise",
+      "attachedAt": "2025-09-08T04:50:41.000Z"
+    },
+    {
+      "policyId": "default-rcp-full-access",
+      "nodeId": "root_enterprise",
+      "attachedAt": "2025-09-08T04:50:41.000Z"
+    }
+  ],
+  "metadata": {
+    "lastSaved": "2025-09-08T05:50:41.962Z",
+    "appVersion": "0.0.0",
+    "organizationVersion": "1.2"
+  }
+}
