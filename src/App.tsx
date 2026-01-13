@@ -144,14 +144,12 @@ function App() {
           {/* Main Layout */}
           <div className="flex flex-1 overflow-hidden" data-tutorial-id="workspace-area">
             {/* Sidebar - Responsive with overlay on mobile */}
-            <div 
-              className={`
-                ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-                fixed inset-y-0 left-0 z-50 w-80 transition-transform duration-300 ease-in-out
-                lg:relative lg:translate-x-0 lg:z-auto
-                ${sidebarOpen ? 'lg:flex-shrink-0' : 'lg:w-0 lg:overflow-hidden'}
-              `}
-            >
+            <div className={`
+              ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+              fixed inset-y-0 left-0 z-50 w-80 transition-transform duration-300 ease-in-out
+              lg:relative lg:translate-x-0 lg:z-auto
+              ${sidebarOpen ? 'lg:flex-shrink-0' : 'lg:w-0 lg:overflow-hidden'}
+            `}>
               <ErrorBoundary onError={(error, errorInfo) => 
                 errorHandlingService.handleException(error, ErrorCategory.SYSTEM, ErrorSeverity.MEDIUM, { errorInfo, component: 'Sidebar' })
               }>
