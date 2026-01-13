@@ -26,10 +26,11 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            vendor: ['react', 'react-dom'],
+            vendor: ['react', 'react-dom', 'zustand'],
             xyflow: ['@xyflow/react', 'dagre'],
-            ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-select', '@radix-ui/react-tooltip'],
+            ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-select', '@radix-ui/react-tooltip', 'sonner', 'lucide-react'],
             editor: ['codemirror', '@codemirror/lang-json', '@codemirror/lint', '@codemirror/state'],
+            utils: ['lodash', 'clsx', 'tailwind-merge', 'class-variance-authority'],
           },
         },
       },
