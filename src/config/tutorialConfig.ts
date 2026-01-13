@@ -345,7 +345,7 @@ export const driverConfig: Config = {
   stagePadding: 10,
   stageRadius: 8,
   overlayColor: '#000',
-  overlayOpacity: 0.7,
+  overlayOpacity: window.matchMedia('(prefers-color-scheme: dark)').matches ? 0.5 : 0.7,
 
   // Progress and buttons
   showProgress: false,

@@ -59,7 +59,7 @@ export async function downloadImage(
 
     // Generate PNG from the viewport with calculated transform
     const dataUrl = await toPng(viewportElement, {
-      backgroundColor: '#ffffff',
+      backgroundColor: 'transparent',
       width: imageWidth,
       height: imageHeight,
       style: {

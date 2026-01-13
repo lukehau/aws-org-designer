@@ -19,6 +19,7 @@ const debounce = <T extends (...args: any[]) => any>(
 };
 import { getLayoutedElements } from '@/utils/layout';
 import { useTutorial } from '@/hooks/useTutorial';
+import { useTheme } from '@/components/theme-provider';
 import {
   ReactFlow,
   useNodesState,
@@ -74,7 +75,7 @@ const nodeTypes = {
  * Convert organization data to React Flow nodes and edges
  * Memoized for performance with large datasets
  */
-const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?: (node: OrgNode) => void, onPolicyClick?: (policyId: string) => void) => {
+const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?: (node: OrgNode) => void, onPolicyClick?: (policyId: string) => void, theme?: 'dark' | 'light') => {
   const { organization, updateNodePosition, inheritanceTrailNodeId, getNodePath, policies, policyAttachments } = useAppStore();
 
   const { nodes, edges } = useMemo(() => {
@@ -85,6 +86,9 @@ const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?:
     const flowNodes: Node[] = [];
     const flowEdges: Edge[] = [];
     const nodeValues = Object.values(organization.nodes);
+    
+    // Edge color based on theme
+    const defaultEdgeColor = theme === 'dark' ? '#e5e5e5' : '#333333';
 
     // Convert organization nodes to React Flow nodes
     nodeValues.forEach((orgNode) => {
@@ -106,7 +110,7 @@ const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?:
       if (orgNode.parentId) {
         // Determine if this edge should be transparent based on inheritance trail
         let edgeOpacity = 1;
-        let edgeColor = 'oklch(0.205 0 0)'; // Default primary color
+        let edgeColor = defaultEdgeColor;
 
         if (inheritanceTrailNodeId) {
           const selectedNodePath = getNodePath(inheritanceTrailNodeId);
@@ -116,7 +120,6 @@ const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?:
           // Edge should be transparent if either source or target is not in the inheritance path
           if (!sourceInPath || !targetInPath) {
             edgeOpacity = 0.3;
-            edgeColor = 'oklch(0.205 0 0 / 0.3)'; // Same color but with transparency
           }
         }
 
@@ -135,7 +138,7 @@ const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?:
     });
 
     return { nodes: flowNodes, edges: flowEdges };
-  }, [organization, onAddNode, onDeleteNode, onPolicyClick, inheritanceTrailNodeId, getNodePath, policies, policyAttachments]);
+  }, [organization, onAddNode, onDeleteNode, onPolicyClick, inheritanceTrailNodeId, getNodePath, policies, policyAttachments, theme]);
 
   // Debounced position update for smooth dragging
   const debouncedUpdatePosition = useMemo(
@@ -250,6 +253,7 @@ const OrganizationTreeInternal = memo(() => {
   }, [importOrganization]);
 
   const { startTutorial } = useTutorial();
+  const { theme } = useTheme();
 
   const handleStartTutorial = useCallback(async () => {
     try {
@@ -267,7 +271,7 @@ const OrganizationTreeInternal = memo(() => {
     }
   }, [handleLoadSample, startTutorial]);
 
-  const { nodes: orgNodes, edges: orgEdges, updateNodePosition } = useOrganizationFlow(handleAddNode, handleDeleteNode, handlePolicyClick);
+  const { nodes: orgNodes, edges: orgEdges, updateNodePosition } = useOrganizationFlow(handleAddNode, handleDeleteNode, handlePolicyClick, theme);
   const [nodes, setNodes, onNodesChange] = useNodesState(orgNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(orgEdges);
 
@@ -490,6 +494,7 @@ const OrganizationTreeInternal = memo(() => {
         onPaneClick={handlePaneClick}
         isValidConnection={isValidConnection}
         nodeTypes={nodeTypes}
+        colorMode={theme}
         fitView
         fitViewOptions={{
           padding: 0.2,
@@ -501,7 +506,7 @@ const OrganizationTreeInternal = memo(() => {
         snapToGrid={true}
         snapGrid={[20, 20]}
         connectionLineStyle={{
-          stroke: '#3b82f6',
+          stroke: 'hsl(var(--primary))',
           strokeWidth: 3,
           strokeDasharray: '5,5',
         }}
@@ -519,22 +524,8 @@ const OrganizationTreeInternal = memo(() => {
         >
           <Tooltip>
             <TooltipTrigger asChild>
-              <ControlButton
-                onClick={() => zoomIn()}
-                style={{
-                  color: '#000000',
-                  opacity: 1,
-                }}
-              >
-                <ZoomIn style={{
-                  color: '#000000',
-                  opacity: 1,
-                  stroke: '#000000',
-                  strokeWidth: 2.5,
-                  fill: 'none',
-                  width: '16px',
-                  height: '16px'
-                }} />
+              <ControlButton onClick={() => zoomIn()}>
+                <ZoomIn className="w-3 h-3" />
               </ControlButton>
             </TooltipTrigger>
             <TooltipContent>
@@ -544,22 +535,8 @@ const OrganizationTreeInternal = memo(() => {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <ControlButton
-                onClick={() => zoomOut()}
-                style={{
-                  color: '#000000',
-                  opacity: 1,
-                }}
-              >
-                <ZoomOut style={{
-                  color: '#000000',
-                  opacity: 1,
-                  stroke: '#000000',
-                  strokeWidth: 2.5,
-                  fill: 'none',
-                  width: '16px',
-                  height: '16px'
-                }} />
+              <ControlButton onClick={() => zoomOut()}>
+                <ZoomOut className="w-3 h-3" />
               </ControlButton>
             </TooltipTrigger>
             <TooltipContent>
@@ -569,22 +546,8 @@ const OrganizationTreeInternal = memo(() => {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <ControlButton
-                onClick={() => fitView()}
-                style={{
-                  color: '#000000',
-                  opacity: 1,
-                }}
-              >
-                <Maximize style={{
-                  color: '#000000',
-                  opacity: 1,
-                  stroke: '#000000',
-                  strokeWidth: 2.5,
-                  fill: 'none',
-                  width: '16px',
-                  height: '16px'
-                }} />
+              <ControlButton onClick={() => fitView()}>
+                <Maximize className="w-3 h-3" />
               </ControlButton>
             </TooltipTrigger>
             <TooltipContent>
@@ -594,22 +557,8 @@ const OrganizationTreeInternal = memo(() => {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <ControlButton
-                onClick={handleAutoArrange}
-                style={{
-                  color: '#000000',
-                  opacity: 1,
-                }}
-              >
-                <LayoutGrid style={{
-                  color: '#000000',
-                  opacity: 1,
-                  stroke: '#000000',
-                  strokeWidth: 2.5,
-                  fill: 'none',
-                  width: '16px',
-                  height: '16px'
-                }} />
+              <ControlButton onClick={handleAutoArrange}>
+                <LayoutGrid className="w-3 h-3" />
               </ControlButton>
             </TooltipTrigger>
             <TooltipContent>
@@ -623,31 +572,12 @@ const OrganizationTreeInternal = memo(() => {
                 onClick={toggleShowAllPolicyBadges}
                 className={showAllPolicyBadges ? "bg-accent" : ""}
                 data-tutorial-id="toggle-policy-badges"
-                style={{
-                  color: '#000000',
-                  opacity: 1,
-                }}
               >
-                {showAllPolicyBadges ?
-                  <Eye style={{
-                    color: '#000000',
-                    opacity: 1,
-                    stroke: '#000000',
-                    strokeWidth: 2.5,
-                    fill: 'none',
-                    width: '16px',
-                    height: '16px'
-                  }} /> :
-                  <EyeOff style={{
-                    color: '#000000',
-                    opacity: 1,
-                    stroke: '#000000',
-                    strokeWidth: 2.5,
-                    fill: 'none',
-                    width: '16px',
-                    height: '16px'
-                  }} />
-                }
+                {showAllPolicyBadges ? (
+                  <Eye className="w-3 h-3" />
+                ) : (
+                  <EyeOff className="w-3 h-3" />
+                )}
               </ControlButton>
             </TooltipTrigger>
             <TooltipContent>

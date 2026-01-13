@@ -71,11 +71,11 @@ export const ErrorPanel: React.FC = () => {
   const getSeverityColor = (severity: 'high' | 'medium' | 'low') => {
     switch (severity) {
       case 'high':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-950/50 dark:text-red-300 dark:border-red-800';
       case 'medium':
-        return 'bg-orange-100 text-orange-800 border-orange-200';
+        return 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-950/50 dark:text-orange-300 dark:border-orange-800';
       case 'low':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-950/50 dark:text-yellow-300 dark:border-yellow-800';
     }
   };
 
@@ -154,12 +154,12 @@ export const ErrorPanel: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full sm:w-96 bg-white border-l border-gray-200 shadow-lg z-50 overflow-hidden flex flex-col">
+    <div className="fixed inset-y-0 right-0 w-full sm:w-96 bg-white dark:bg-gray-950 border-l border-gray-200 dark:border-gray-800 shadow-lg z-50 overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200 bg-red-50">
+      <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200 dark:border-gray-800 bg-red-50 dark:bg-red-950/50">
         <div className="flex items-center gap-2 min-w-0">
-          <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 flex-shrink-0" />
-          <h2 className="text-base sm:text-lg font-semibold text-red-900 truncate">
+          <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 dark:text-red-400 flex-shrink-0" />
+          <h2 className="text-base sm:text-lg font-semibold text-red-900 dark:text-red-300 truncate">
             <span className="hidden sm:inline">Validation Issues</span>
             <span className="sm:hidden">Issues</span>
           </h2>
@@ -171,7 +171,7 @@ export const ErrorPanel: React.FC = () => {
           variant="ghost"
           size="sm"
           onClick={() => setShowErrorPanel(false)}
-          className="text-red-600 hover:text-red-800 flex-shrink-0"
+          className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 flex-shrink-0"
           aria-label="Close error panel"
         >
           <X className="w-4 h-4" />
@@ -181,10 +181,10 @@ export const ErrorPanel: React.FC = () => {
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
         {validationErrors.length === 0 ? (
-          <div className="p-4 sm:p-6 text-center text-gray-500">
-            <AlertCircle className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-4 text-gray-300" />
+          <div className="p-4 sm:p-6 text-center text-gray-500 dark:text-gray-400">
+            <AlertCircle className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
             <p className="text-sm">No validation issues found.</p>
-            <p className="text-xs text-gray-400 mt-2">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
               Your organization structure is compliant with AWS limits.
             </p>
           </div>
@@ -198,22 +198,22 @@ export const ErrorPanel: React.FC = () => {
               <CardContent className="pt-0">
                 <div className="grid grid-cols-3 gap-2 text-xs">
                   <div className="text-center">
-                    <div className="text-base sm:text-lg font-semibold text-red-600">
+                    <div className="text-base sm:text-lg font-semibold text-red-600 dark:text-red-400">
                       {validationErrors.filter(e => getErrorSeverity(e) === 'high').length}
                     </div>
-                    <div className="text-gray-500">High</div>
+                    <div className="text-gray-500 dark:text-gray-400">High</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-base sm:text-lg font-semibold text-orange-600">
+                    <div className="text-base sm:text-lg font-semibold text-orange-600 dark:text-orange-400">
                       {validationErrors.filter(e => getErrorSeverity(e) === 'medium').length}
                     </div>
-                    <div className="text-gray-500">Medium</div>
+                    <div className="text-gray-500 dark:text-gray-400">Medium</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-base sm:text-lg font-semibold text-yellow-600">
+                    <div className="text-base sm:text-lg font-semibold text-yellow-600 dark:text-yellow-400">
                       {validationErrors.filter(e => getErrorSeverity(e) === 'low').length}
                     </div>
-                    <div className="text-gray-500">Low</div>
+                    <div className="text-gray-500 dark:text-gray-400">Low</div>
                   </div>
                 </div>
               </CardContent>
@@ -233,7 +233,7 @@ export const ErrorPanel: React.FC = () => {
                 </CardHeader>
                 <CardContent className="pt-0 space-y-2">
                   {errors.map(({ error, index }) => (
-                    <div key={index} className="border rounded-lg p-2 sm:p-3 bg-gray-50">
+                    <div key={index} className="border rounded-lg p-2 sm:p-3 bg-gray-50 dark:bg-gray-900">
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1 sm:gap-2 mb-1 flex-wrap">
@@ -246,7 +246,7 @@ export const ErrorPanel: React.FC = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-5 px-2 text-xs text-blue-600 hover:text-blue-800"
+                                className="h-5 px-2 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                                 onClick={() => console.log('Navigate to node:', error.nodeId)}
                               >
                                 <ExternalLink className="w-3 h-3 mr-1" />
@@ -256,7 +256,7 @@ export const ErrorPanel: React.FC = () => {
                               </Button>
                             )}
                           </div>
-                          <p className="text-xs sm:text-sm text-gray-700 mb-2">
+                          <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mb-2">
                             {error.message}
                           </p>
                           
@@ -276,7 +276,7 @@ export const ErrorPanel: React.FC = () => {
                           </Button>
                           
                           {expandedErrors.has(index) && (
-                            <div className="mt-2 p-2 bg-white rounded border text-xs">
+                            <div className="mt-2 p-2 bg-white dark:bg-gray-950 rounded border text-xs">
                               {error.currentCount !== undefined && error.maxAllowed !== undefined && (
                                 <div className="mb-2">
                                   <strong>Current:</strong> {error.currentCount} / {error.maxAllowed}
@@ -285,7 +285,7 @@ export const ErrorPanel: React.FC = () => {
                               
                               <div className="mb-2">
                                 <strong>Suggested Actions:</strong>
-                                <ul className="list-disc list-inside mt-1 space-y-1 text-gray-600">
+                                <ul className="list-disc list-inside mt-1 space-y-1 text-gray-600 dark:text-gray-400">
                                   {getSuggestedActions(error).map((action, actionIndex) => (
                                     <li key={actionIndex}>{action}</li>
                                   ))}
@@ -306,7 +306,7 @@ export const ErrorPanel: React.FC = () => {
 
       {/* Footer */}
       {validationErrors.length > 0 && (
-        <div className="border-t border-gray-200 p-3 sm:p-4 bg-gray-50">
+        <div className="border-t border-gray-200 dark:border-gray-800 p-3 sm:p-4 bg-gray-50 dark:bg-gray-900">
           <Button
             variant="outline"
             size="sm"
@@ -315,7 +315,7 @@ export const ErrorPanel: React.FC = () => {
           >
             Clear All Issues
           </Button>
-          <p className="text-xs text-gray-500 mt-2 text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
             <span className="hidden sm:inline">Issues will be automatically updated as you make changes</span>
             <span className="sm:hidden">Auto-updated on changes</span>
           </p>

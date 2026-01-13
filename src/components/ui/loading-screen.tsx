@@ -35,7 +35,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     <Spinner
       variant={variant}
       size={getSizeValue(size)}
-      className={cn('text-gray-500', className)}
+      className={cn('text-gray-500 dark:text-gray-400', className)}
     />
   );
 };
@@ -58,10 +58,10 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
     <div className="relative">
       {children}
       {isLoading && (
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10">
+        <div className="absolute inset-0 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm flex items-center justify-center z-10">
           <div className="flex flex-col items-center gap-3">
             <LoadingSpinner size="lg" />
-            <p className="text-sm text-gray-600">{message}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300">{message}</p>
           </div>
         </div>
       )}

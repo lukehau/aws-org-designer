@@ -83,13 +83,13 @@
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.25 0 0);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.25 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --secondary: oklch(0.35 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
@@ -105,7 +105,7 @@
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
+  --sidebar: oklch(0.25 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
@@ -115,10 +115,29 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Override React Flow styling to match our design system - must be outside @layer for proper specificity */
+.react-flow.dark {
+  --xy-edge-stroke-default: hsl(var(--foreground));
+  --xy-edge-stroke-selected-default: hsl(var(--primary));
+  --xy-background-color-default: oklch(0.25 0 0); /* Match --card color */
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  
+  /* Remove unwanted borders from ReactFlow controls */
+  .react-flow__controls-button,
+  .react-flow__controls-button * {
+    border: none !important;
+  }
+  
+  /* Ensure SVG icons in ReactFlow controls remain outline-only (no fill) */
+  .react-flow__controls-button svg {
+    fill: none !important;
+  }
+  
   body {
     @apply bg-background text-foreground;
     margin: 0;
@@ -127,6 +146,12 @@
   }
   #root {
     min-height: 100vh;
+  }
+  
+  /* Override browser default link colors for both light and dark modes */
+  a {
+    color: inherit !important;
+    text-decoration: inherit;
   }
 
   /* Improved focus styles for accessibility */
@@ -209,6 +234,16 @@
     min-width: 10px !important;
     min-height: 10px !important;
     border-radius: 50% !important;
+  }
+
+  /* React Flow dark mode fixes - remove blue backgrounds */
+  .dark .react-flow__attribution {
+    background: transparent !important;
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .dark .react-flow__attribution a {
+    color: hsl(var(--muted-foreground)) !important;
   }
 
   /* CodeMirror JSON Editor Styling */
