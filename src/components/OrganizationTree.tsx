@@ -525,7 +525,7 @@ const OrganizationTreeInternal = memo(() => {
           <Tooltip>
             <TooltipTrigger asChild>
               <ControlButton onClick={() => zoomIn()}>
-                <ZoomIn className="w-4 h-4" />
+                <ZoomIn className="w-3 h-3" />
               </ControlButton>
             </TooltipTrigger>
             <TooltipContent>
@@ -536,7 +536,7 @@ const OrganizationTreeInternal = memo(() => {
           <Tooltip>
             <TooltipTrigger asChild>
               <ControlButton onClick={() => zoomOut()}>
-                <ZoomOut className="w-4 h-4" />
+                <ZoomOut className="w-3 h-3" />
               </ControlButton>
             </TooltipTrigger>
             <TooltipContent>
@@ -547,7 +547,7 @@ const OrganizationTreeInternal = memo(() => {
           <Tooltip>
             <TooltipTrigger asChild>
               <ControlButton onClick={() => fitView()}>
-                <Maximize className="w-4 h-4" />
+                <Maximize className="w-3 h-3" />
               </ControlButton>
             </TooltipTrigger>
             <TooltipContent>
@@ -558,7 +558,7 @@ const OrganizationTreeInternal = memo(() => {
           <Tooltip>
             <TooltipTrigger asChild>
               <ControlButton onClick={handleAutoArrange}>
-                <LayoutGrid className="w-4 h-4" />
+                <LayoutGrid className="w-3 h-3" />
               </ControlButton>
             </TooltipTrigger>
             <TooltipContent>
@@ -574,9 +574,9 @@ const OrganizationTreeInternal = memo(() => {
                 data-tutorial-id="toggle-policy-badges"
               >
                 {showAllPolicyBadges ? (
-                  <Eye className="w-4 h-4" />
+                  <Eye className="w-3 h-3" />
                 ) : (
-                  <EyeOff className="w-4 h-4" />
+                  <EyeOff className="w-3 h-3" />
                 )}
               </ControlButton>
             </TooltipTrigger>

@@ -127,6 +127,17 @@
     @apply border-border outline-ring/50;
   }
   
+  /* Remove unwanted borders from ReactFlow controls */
+  .react-flow__controls-button,
+  .react-flow__controls-button * {
+    border: none !important;
+  }
+  
+  /* Ensure SVG icons in ReactFlow controls remain outline-only (no fill) */
+  .react-flow__controls-button svg {
+    fill: none !important;
+  }
+  
   body {
     @apply bg-background text-foreground;
     margin: 0;
