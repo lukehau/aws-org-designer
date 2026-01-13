@@ -28,9 +28,11 @@ export default defineConfig(({ mode }) => {
           manualChunks: {
             vendor: ['react', 'react-dom', 'zustand'],
             xyflow: ['@xyflow/react', 'dagre'],
-            ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-select', '@radix-ui/react-tooltip', 'sonner', 'lucide-react'],
+            ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-select', '@radix-ui/react-tooltip', '@radix-ui/react-alert-dialog', '@radix-ui/react-collapsible', '@radix-ui/react-label', '@radix-ui/react-progress', '@radix-ui/react-radio-group', '@radix-ui/react-separator', '@radix-ui/react-slot', '@radix-ui/react-switch', '@radix-ui/react-toast', 'sonner', 'cmdk'],
+            icons: ['lucide-react'],
             editor: ['codemirror', '@codemirror/lang-json', '@codemirror/lint', '@codemirror/state'],
             utils: ['lodash', 'clsx', 'tailwind-merge', 'class-variance-authority'],
+            tour: ['driver.js', 'html-to-image'],
           },
         },
       },
