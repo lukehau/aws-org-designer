@@ -1,13 +1,20 @@
 {
-  "name": "app",
+  "name": "aws-org-designer",
+  "productName": "AWS Org Designer",
+  "version": "1.0.0",
+  "description": "Visual designer and management tool for AWS Organizations",
+  "author": "Your Name",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "main": ".vite/build/main.js",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b tsconfig.app.json && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "forge:start": "electron-forge start",
+    "forge:package": "electron-forge package",
+    "forge:make": "electron-forge make",
     "cdk:install": "cd cdk && npm install",
     "cdk:synth:dev": "cd cdk && npm run synth:dev",
     "cdk:synth:prod": "cd cdk && npm run synth:prod",
@@ -46,7 +53,7 @@
     "html-to-image": "^1.11.11",
     "intro.js": "^8.3.2",
     "lodash": "^4.17.21",
-    "lucide-react": "^0.542.0",
+    "lucide-react": "^0.562.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-window-infinite-loader": "^1.0.10",
@@ -57,12 +64,23 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.11.1",
+    "@electron-forge/maker-deb": "^7.11.1",
+    "@electron-forge/maker-dmg": "^7.11.1",
+    "@electron-forge/maker-rpm": "^7.11.1",
+    "@electron-forge/maker-squirrel": "^7.11.1",
+    "@electron-forge/maker-zip": "^7.11.1",
+    "@electron-forge/plugin-fuses": "^7.11.1",
+    "@electron-forge/plugin-vite": "^7.11.1",
+    "@electron/fuses": "^1.8.0",
     "@eslint/js": "^9.33.0",
     "@types/intro.js": "^5.1.5",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.0",
     "autoprefixer": "^10.4.21",
+    "electron": "^39.2.7",
+    "electron-squirrel-startup": "^1.0.1",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
@@ -73,5 +91,8 @@
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2",
     "vite-plugin-svgr": "^4.5.0"
+  },
+  "overrides": {
+    "tmp": "^0.2.3"
   }
 }
