@@ -869,8 +869,10 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
 												if (!option) {
 													return null;
 												}
-												const badgeStyle: React.CSSProperties = {
-													animationDuration: `${animation}s`,
+												// Only pass style prop if there are custom styles that override PolicyBadge defaults
+												// Otherwise, let PolicyBadge use its own internal styles
+												const hasCustomOverrides = customStyle?.badgeColor || customStyle?.gradient;
+												const badgeStyleProp = hasCustomOverrides ? {
 													...(customStyle?.badgeColor && {
 														backgroundColor: customStyle.badgeColor,
 													}),
@@ -878,7 +880,8 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
 														background: customStyle.gradient,
 														color: "white",
 													}),
-												};
+												} : undefined;
+												
 												return (
 													<PolicyBadge
 														key={value}
@@ -894,12 +897,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
 															singleLine && "flex-shrink-0 whitespace-nowrap",
 															smartTruncate && "flex items-center min-w-0"
 														)}
-														style={{
-															...badgeStyle,
-															animationDuration: `${animationConfig?.duration || animation
-																}s`,
-															animationDelay: `${animationConfig?.delay || 0}s`,
-														}}>
+														{...(badgeStyleProp && { style: badgeStyleProp })}>
 														{IconComponent && !responsiveSettings.hideIcons && (
 															<IconComponent
 																className={cn(
