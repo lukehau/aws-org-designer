@@ -78,6 +78,22 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
       <div className="px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 min-w-0">
+            {/* Mobile menu button - far left */}
+            {onToggleSidebar && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggleSidebar}
+                className="lg:hidden flex-shrink-0"
+                aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
+              >
+                {sidebarOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+              </Button>
+            )}
             <AWSIcon type="root" size="xlg" className="flex-shrink-0" />
             <div className="min-w-0">
               <h1 className="text-lg sm:text-xl font-semibold truncate">AWS Organization Designer</h1>
@@ -150,23 +166,6 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
                 <span className="hidden sm:inline ml-1">Clear</span>
               </Button>
             </div>
-
-            {/* Mobile menu button */}
-            {onToggleSidebar && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onToggleSidebar}
-                className="lg:hidden"
-                aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
-              >
-                {sidebarOpen ? (
-                  <X className="h-5 w-5" />
-                ) : (
-                  <Menu className="h-5 w-5" />
-                )}
-              </Button>
-            )}
           </div>
         </div>
       </div>

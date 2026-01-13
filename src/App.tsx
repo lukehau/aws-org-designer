@@ -63,10 +63,12 @@ function App() {
     const handleResize = () => {
       const isMobile = window.innerWidth < 1024 // lg breakpoint
       
-      // Only auto-close sidebar when transitioning to mobile
-      // Don't auto-open when transitioning to desktop (respect user preference)
       if (isMobile && sidebarOpen) {
+        // Auto-close sidebar when transitioning to mobile
         setSidebarOpen(false)
+      } else if (!isMobile && !sidebarOpen) {
+        // Auto-open sidebar when transitioning back to desktop
+        setSidebarOpen(true)
       }
     }
 
