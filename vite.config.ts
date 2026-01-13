@@ -22,5 +22,17 @@ export default defineConfig(({ mode }) => {
       port: env.VITE_PORT ? Number(env.VITE_PORT) : 3000,
       host: '0.0.0.0',
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom'],
+            xyflow: ['@xyflow/react', 'dagre'],
+            ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-select', '@radix-ui/react-tooltip'],
+            editor: ['codemirror', '@codemirror/lang-json', '@codemirror/lint', '@codemirror/state'],
+          },
+        },
+      },
+    },
   }
 })
