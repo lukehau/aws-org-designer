@@ -259,7 +259,7 @@ export const createValidationSlice: StateCreator<
     // Check if content is valid JSON
     try {
       JSON.parse(content);
-    } catch (error) {
+    } catch {
       errors.push(createValidationError(
         ValidationErrorType.INVALID_POLICY_JSON,
         'Policy content must be valid JSON.',

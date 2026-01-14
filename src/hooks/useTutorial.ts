@@ -4,7 +4,7 @@
  */
 
 import { useCallback } from 'react';
-import { tutorialService } from '@/services/tutorialService';
+import { tutorialService, type PopoverConfig } from '@/services/tutorialService';
 import { useAppStore } from '@/store';
 
 export function useTutorial() {
@@ -36,7 +36,7 @@ export function useTutorial() {
   /**
    * Highlight a specific element (for contextual help)
    */
-  const highlightElement = useCallback((element: string | Element, popover?: any) => {
+  const highlightElement = useCallback((element: string | Element, popover?: PopoverConfig) => {
     tutorialService.highlight(element, popover);
   }, []);
 

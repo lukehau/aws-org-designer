@@ -23,7 +23,7 @@ interface JsonEditorProps {
 }
 
 export const JsonEditor = React.forwardRef<HTMLDivElement, JsonEditorProps>(
-  ({ value, onChange, placeholder: _placeholderText, disabled, readOnly, className, id }, ref) => {
+  ({ value, onChange, disabled, readOnly, className, id }, ref) => {
     const editorRef = useRef<HTMLDivElement>(null);
     const viewRef = useRef<EditorView | null>(null);
 
@@ -76,6 +76,10 @@ export const JsonEditor = React.forwardRef<HTMLDivElement, JsonEditorProps>(
         view.destroy();
         viewRef.current = null;
       };
+      // Note: onChange and value are intentionally excluded from deps.
+      // onChange is captured in the closure and value is only used for initial state.
+      // Value changes are handled by the separate useEffect below.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [disabled, readOnly]); // Recreate when disabled/readOnly changes
 
     // Update editor content when value prop changes externally

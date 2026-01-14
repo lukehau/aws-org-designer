@@ -109,7 +109,7 @@ function App() {
     }
   }, [validationErrors, hasValidationErrors, setShowErrorPanel, showValidationErrorToast, showErrorToast])
 
-  const handleAppError = (error: Error, errorInfo: any) => {
+  const handleAppError = (error: Error, errorInfo: React.ErrorInfo) => {
     // Handle React error boundary errors
     errorHandlingService.handleException(
       error, 

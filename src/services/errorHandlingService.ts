@@ -39,7 +39,7 @@ export interface AppError {
   category: ErrorCategory;
   severity: ErrorSeverity;
   timestamp: Date;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   stack?: string;
   userMessage?: string;
   suggestedActions?: string[];
@@ -97,7 +97,7 @@ export class ErrorHandlingService {
     message: string,
     category: ErrorCategory,
     severity: ErrorSeverity = ErrorSeverity.MEDIUM,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): AppError {
     return {
       id: this.generateErrorId(),
@@ -118,7 +118,7 @@ export class ErrorHandlingService {
     error: Error,
     category: ErrorCategory = ErrorCategory.SYSTEM,
     severity: ErrorSeverity = ErrorSeverity.HIGH,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): AppError {
     return {
       id: this.generateErrorId(),
@@ -258,7 +258,7 @@ export class ErrorHandlingService {
     error: Error,
     category: ErrorCategory = ErrorCategory.SYSTEM,
     severity: ErrorSeverity = ErrorSeverity.HIGH,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): AppError {
     const appError = this.createErrorFromException(error, category, severity, context);
     this.handleError(appError);

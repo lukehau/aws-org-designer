@@ -13,6 +13,35 @@ interface NavigationOptions {
   };
 }
 
+// Type for the app store exposed on window
+interface AppStoreState {
+  setShowAllPolicyBadges?: (show: boolean) => void;
+  selectNode?: (nodeId: string | null) => void;
+  clearInheritanceTrail?: () => void;
+  setInheritanceTrailNodeId?: (nodeId: string | null) => void;
+  clearOrganization?: (silent?: boolean) => void;
+  setTutorialActive?: (active: boolean) => void;
+  setTutorialCompleted?: (completed: boolean) => void;
+  organization?: {
+    nodes: Record<string, { id: string; name: string; type: string }>;
+  };
+  reactFlowInstance?: {
+    fitView: (options?: { duration?: number }) => void;
+    fitBounds: (bounds: { x: number; y: number; width: number; height: number }, options?: { padding?: number; duration?: number }) => void;
+    getNode: (id: string) => { position: { x: number; y: number }; width?: number; height?: number } | undefined;
+  };
+}
+
+interface AppStoreWindow {
+  getState?: () => AppStoreState;
+}
+
+declare global {
+  interface Window {
+    __appStore?: AppStoreWindow;
+  }
+}
+
 /**
  * Tutorial step descriptions
  * Extracted for better readability and easier editing
@@ -48,7 +77,7 @@ const descriptions = {
   
   nodeSelection: `
     Click on a node to manage its attachments.
-\  `,
+  `,
   
   headerActions: `
     Use the header controls to download an image of your Organisation. Export it to a JSON file to save it, or import a previously saved design.<br/><br/>
@@ -90,7 +119,7 @@ export const tutorialSteps: DriveStep[] = [
       // Override next button to deactivate badges and switch to Policy Library tab
       onNextClick: (_element: Element | undefined, _step: Step, options: NavigationOptions) => {
         // Deactivate policy badges using store
-        const store = (window as any).__appStore;
+        const store = window.__appStore;
         if (store && store.getState) {
           const { setShowAllPolicyBadges } = store.getState();
           if (setShowAllPolicyBadges) {
@@ -110,7 +139,7 @@ export const tutorialSteps: DriveStep[] = [
       },
       onPrevClick: (_element: Element | undefined, _step: Step, options: NavigationOptions) => {
         // Deactivate policy badges when going back
-        const store = (window as any).__appStore;
+        const store = window.__appStore;
         if (store && store.getState) {
           const { setShowAllPolicyBadges } = store.getState();
           if (setShowAllPolicyBadges) {
@@ -122,7 +151,7 @@ export const tutorialSteps: DriveStep[] = [
     },
     onHighlightStarted: () => {
       // Activate policy badges using store
-      const store = (window as any).__appStore;
+      const store = window.__appStore;
       if (store && store.getState) {
         const { setShowAllPolicyBadges } = store.getState();
         if (setShowAllPolicyBadges) {
@@ -192,7 +221,7 @@ export const tutorialSteps: DriveStep[] = [
       align: 'center',
       onNextClick: (_element: Element | undefined, _step: Step, options: NavigationOptions) => {
         // Get store state
-        const store = (window as any).__appStore;
+        const store = window.__appStore;
         if (store && store.getState) {
           const { selectNode, clearInheritanceTrail, setShowAllPolicyBadges, reactFlowInstance } = store.getState();
           
@@ -227,7 +256,7 @@ export const tutorialSteps: DriveStep[] = [
       },
       onPrevClick: (_element: Element | undefined, _step: Step, options: NavigationOptions) => {
         // Get store state
-        const store = (window as any).__appStore;
+        const store = window.__appStore;
         if (store && store.getState) {
           const { selectNode, reactFlowInstance } = store.getState();
           
@@ -255,7 +284,7 @@ export const tutorialSteps: DriveStep[] = [
       // Return a Promise so driver.js waits for the async operations
       return new Promise<void>((resolve) => {
         // Get store state
-        const store = (window as any).__appStore;
+        const store = window.__appStore;
         if (store && store.getState) {
           const state = store.getState();
           const { organization, selectNode, reactFlowInstance } = state;
@@ -302,9 +331,12 @@ export const tutorialSteps: DriveStep[] = [
                 setTimeout(() => {
                   selectNode(nonProdId);
                   // Also set inheritance trail like when clicking a node
-                  const { setInheritanceTrailNodeId } = store.getState();
-                  if (setInheritanceTrailNodeId) {
-                    setInheritanceTrailNodeId(nonProdId);
+                  const currentState = store.getState?.();
+                  if (currentState) {
+                    const { setInheritanceTrailNodeId } = currentState;
+                    if (setInheritanceTrailNodeId) {
+                      setInheritanceTrailNodeId(nonProdId);
+                    }
                   }
                   resolve();
                 }, 900);
@@ -363,7 +395,7 @@ export const driverConfig: Config = {
   // Lifecycle hooks
   onDestroyed: () => {
     // Get store instance
-    const store = (window as any).__appStore;
+    const store = window.__appStore;
     if (store && store.getState) {
       const { clearOrganization, setTutorialActive, setTutorialCompleted } = store.getState();
       

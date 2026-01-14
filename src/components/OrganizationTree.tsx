@@ -6,15 +6,15 @@
 
 import { useCallback, useEffect, useMemo, useState, memo } from 'react';
 
-// Simple debounce utility to avoid lodash dependency issues
-const debounce = <T extends (...args: any[]) => any>(
-  func: T,
+// Simple debounce utility for position updates
+const debounce = (
+  func: (nodeId: string, position: { x: number; y: number }) => void,
   wait: number
-): ((...args: Parameters<T>) => void) => {
+): ((nodeId: string, position: { x: number; y: number }) => void) => {
   let timeout: ReturnType<typeof setTimeout>;
-  return (...args: Parameters<T>) => {
+  return (nodeId: string, position: { x: number; y: number }) => {
     clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
+    timeout = setTimeout(() => func(nodeId, position), wait);
   };
 };
 import { getLayoutedElements } from '@/utils/layout';
@@ -78,7 +78,7 @@ const nodeTypes = {
  * Memoized for performance with large datasets
  */
 const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?: (node: OrgNode) => void, onPolicyClick?: (policyId: string) => void, theme?: 'dark' | 'light') => {
-  const { organization, updateNodePosition, inheritanceTrailNodeId, getNodePath, policies, policyAttachments } = useAppStore();
+  const { organization, updateNodePosition, inheritanceTrailNodeId, getNodePath } = useAppStore();
 
   const { nodes, edges } = useMemo(() => {
     if (!organization) {
@@ -112,7 +112,7 @@ const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?:
       if (orgNode.parentId) {
         // Determine if this edge should be transparent based on inheritance trail
         let edgeOpacity = 1;
-        let edgeColor = defaultEdgeColor;
+        const edgeColor = defaultEdgeColor;
 
         if (inheritanceTrailNodeId) {
           const selectedNodePath = getNodePath(inheritanceTrailNodeId);
@@ -140,7 +140,7 @@ const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?:
     });
 
     return { nodes: flowNodes, edges: flowEdges };
-  }, [organization, onAddNode, onDeleteNode, onPolicyClick, inheritanceTrailNodeId, getNodePath, policies, policyAttachments, theme]);
+  }, [organization, onAddNode, onDeleteNode, onPolicyClick, inheritanceTrailNodeId, getNodePath, theme]);
 
   // Debounced position update for smooth dragging
   const debouncedUpdatePosition = useMemo(

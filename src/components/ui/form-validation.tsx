@@ -215,15 +215,15 @@ export const ValidationStatus: React.FC<ValidationStatusProps> = ({
 /**
  * Hook for managing form validation state
  */
-export const useFormValidation = <T extends Record<string, any>>(
+export const useFormValidation = <T extends Record<string, unknown>>(
   initialValues: T,
-  validationRules: Record<keyof T, (value: any) => string | null>
+  validationRules: Record<keyof T, (value: T[keyof T]) => string | null>
 ) => {
   const [values, setValues] = React.useState<T>(initialValues);
   const [errors, setErrors] = React.useState<Record<keyof T, string | null>>({} as Record<keyof T, string | null>);
   const [touched, setTouchedState] = React.useState<Record<keyof T, boolean>>({} as Record<keyof T, boolean>);
 
-  const validateField = React.useCallback((field: keyof T, value: any) => {
+  const validateField = React.useCallback((field: keyof T, value: T[keyof T]) => {
     const rule = validationRules[field];
     if (rule) {
       return rule(value);
@@ -248,7 +248,7 @@ export const useFormValidation = <T extends Record<string, any>>(
     return isValid;
   }, [values, validateField]);
 
-  const setValue = React.useCallback((field: keyof T, value: any) => {
+  const setValue = React.useCallback((field: keyof T, value: T[keyof T]) => {
     setValues(prev => ({ ...prev, [field]: value }));
     
     // Validate field if it has been touched

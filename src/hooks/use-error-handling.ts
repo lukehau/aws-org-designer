@@ -24,7 +24,7 @@ export const useErrorHandling = () => {
     error: Error,
     category: ErrorCategory = ErrorCategory.SYSTEM,
     severity: ErrorSeverity = ErrorSeverity.HIGH,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ) => {
     const appError = errorHandlingService.handleException(error, category, severity, context);
     
@@ -175,10 +175,10 @@ export const useErrorHandling = () => {
   /**
    * Handle form submission with validation and error handling
    */
-  const handleFormSubmission = useCallback(async <T,>(
-    formData: any,
-    submitFunction: (data: any) => Promise<T>,
-    validationFunction?: (data: any) => ValidationResult,
+  const handleFormSubmission = useCallback(async <T, D = unknown>(
+    formData: D,
+    submitFunction: (data: D) => Promise<T>,
+    validationFunction?: (data: D) => ValidationResult,
     options: {
       successMessage?: string;
       errorMessage?: string;

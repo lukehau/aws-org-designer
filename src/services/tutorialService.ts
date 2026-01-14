@@ -4,8 +4,26 @@
  */
 
 import { driver } from 'driver.js';
-import type { Driver, Config } from 'driver.js';
+import type { Driver, Config, Popover } from 'driver.js';
 import { driverConfig } from '@/config/tutorialConfig';
+
+/**
+ * Popover configuration type for highlight method
+ */
+export interface PopoverConfig {
+  title?: string;
+  description?: string;
+  side?: 'top' | 'right' | 'bottom' | 'left';
+  align?: 'start' | 'center' | 'end';
+}
+
+/**
+ * Highlight configuration type
+ */
+interface HighlightConfig {
+  element: string | Element;
+  popover?: Popover;
+}
 
 /**
  * Tutorial Service Class
@@ -97,12 +115,13 @@ export class TutorialService {
   /**
    * Highlight a single element (useful for contextual help)
    */
-  highlight(element: string | Element, popover?: any): void {
+  highlight(element: string | Element, popover?: PopoverConfig): void {
     const driverInstance = this.initDriver();
-    driverInstance.highlight({
-      element,
-      popover,
-    });
+    const config: HighlightConfig = { element };
+    if (popover) {
+      config.popover = popover as Popover;
+    }
+    driverInstance.highlight(config);
   }
 }
 
