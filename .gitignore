@@ -10,16 +10,11 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist-electron
 *.local
 
-# Cache directories
-.cache/
-cache/
-data/
-
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
+.vscode/
 .idea
 .DS_Store
 *.suo
@@ -27,3 +22,11 @@ data/
 *.njsproj
 *.sln
 *.sw?
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Electron Forge
+out/
+.vite/
+release/
