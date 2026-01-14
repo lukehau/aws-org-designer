@@ -31,7 +31,32 @@ jobs:
           aws-region: ap-southeast-2
 
       - name: Trigger Amplify deployment
-        run: aws amplify start-job --app-id ${{ vars.AMPLIFY_APP_ID }} --branch-name main --job-type RELEASE
+        id: start-job
+        run: |
+          RESPONSE=$(aws amplify start-job --app-id ${{ vars.AMPLIFY_APP_ID }} --branch-name main --job-type RELEASE)
+          JOB_ID=$(echo $RESPONSE | jq -r '.jobSummary.jobId')
+          echo "job_id=$JOB_ID" >> $GITHUB_OUTPUT
+          echo "Started Amplify job: $JOB_ID"
+
+      - name: Wait for Amplify deployment
+        run: |
+          JOB_ID="${{ steps.start-job.outputs.job_id }}"
+          echo "Waiting for job $JOB_ID to complete..."
+          
+          while true; do
+            STATUS=$(aws amplify get-job --app-id ${{ vars.AMPLIFY_APP_ID }} --branch-name main --job-id $JOB_ID --query 'job.summary.status' --output text)
+            echo "Status: $STATUS"
+            
+            if [ "$STATUS" = "SUCCEED" ]; then
+              echo "Amplify deployment succeeded"
+              exit 0
+            elif [ "$STATUS" = "FAILED" ] || [ "$STATUS" = "CANCELLED" ]; then
+              echo "Amplify deployment failed with status: $STATUS"
+              exit 1
+            fi
+            
+            sleep 15
+          done
 
   release-mac:
     runs-on: macos-latest
@@ -43,10 +68,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build and release for macOS
         env:
@@ -63,10 +87,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build and release for Windows
         env:
