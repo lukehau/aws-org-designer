@@ -20,6 +20,8 @@ const debounce = <T extends (...args: any[]) => any>(
 import { getLayoutedElements } from '@/utils/layout';
 import { useTutorial } from '@/hooks/useTutorial';
 import { useTheme } from '@/components/theme-provider';
+import { toast } from 'sonner';
+import sampleOrgUrl from '/sample-aws-organization.json?url';
 import {
   ReactFlow,
   useNodesState,
@@ -230,15 +232,17 @@ const OrganizationTreeInternal = memo(() => {
         console.error('Failed to import organization:', error);
       });
     } else if (file) {
-      alert('Please select a valid JSON file');
+      toast.error('Invalid file type', {
+        description: 'Please select a valid JSON file.'
+      });
     }
     // Reset file input
     setFileInputKey(prev => prev + 1);
   }, [importOrganization]);
 
-  const handleLoadSample = useCallback(async (silent = false) => {
+  const handleLoadSample = useCallback(async (silent = false): Promise<boolean> => {
     try {
-      const response = await fetch('/sample-aws-organization.json');
+      const response = await fetch(sampleOrgUrl);
       if (!response.ok) {
         throw new Error(`Failed to fetch sample: ${response.statusText}`);
       }
@@ -246,9 +250,13 @@ const OrganizationTreeInternal = memo(() => {
       const file = new File([blob], 'sample-aws-organization.json', { type: 'application/json' });
 
       await importOrganization(file, silent);
+      return true;
     } catch (error) {
       console.error('Failed to load sample organization:', error);
-      alert('Failed to load sample organization. Please try again.');
+      toast.error('Failed to load sample organization', {
+        description: 'Please try again.'
+      });
+      return false;
     }
   }, [importOrganization]);
 
@@ -258,7 +266,12 @@ const OrganizationTreeInternal = memo(() => {
   const handleStartTutorial = useCallback(async () => {
     try {
       // First, load the sample organization silently (no toast)
-      await handleLoadSample(true);
+      const success = await handleLoadSample(true);
+      
+      // Only proceed with tutorial if sample org loaded successfully
+      if (!success) {
+        return;
+      }
       
       // Wait a bit for the organization to render
       await new Promise(resolve => setTimeout(resolve, 800));
@@ -267,7 +280,9 @@ const OrganizationTreeInternal = memo(() => {
       startTutorial();
     } catch (error) {
       console.error('Failed to start tutorial:', error);
-      alert('Failed to start tutorial. Please try again.');
+      toast.error('Failed to start tutorial', {
+        description: 'Please try again.'
+      });
     }
   }, [handleLoadSample, startTutorial]);
 
@@ -501,7 +516,7 @@ const OrganizationTreeInternal = memo(() => {
           includeHiddenNodes: false,
         }}
         minZoom={0.1}
-        maxZoom={2}
+        maxZoom={1}
         defaultViewport={{ x: 0, y: 0, zoom: 1 }}
         snapToGrid={true}
         snapGrid={[20, 20]}

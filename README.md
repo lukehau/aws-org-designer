@@ -4,7 +4,7 @@ A tool to help you design your AWS Organization, and visualise the inheritance o
 
 https://org-designer.lukeh.au/ 
 
-![AWS Organization Designer](public/hero.png)
+![AWS Organization Designer](images/hero.png)
 
 ## License
 

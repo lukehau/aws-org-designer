@@ -149,6 +149,9 @@ export const createOrganizationSlice: StateCreator<
       },
       policyAttachments: [defaultSCPAttachment, defaultRCPAttachment],
     });
+
+    // Refresh policy data cache so policy badges work immediately
+    get().refreshAllNodesPolicyData();
   },
 
   addNode: (parentId: string, type: 'ou' | 'account', name: string) => {

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "com.lukehau.aws-org-designer",
+  "productName": "AWS Org Designer",
+  "copyright": "Copyright © 2025 Luke Hau",
+  "asar": true,
+  "directories": {
+    "output": "release",
+    "buildResources": "build"
+  },
+  "files": [
+    "dist-electron/**/*",
+    "!dist-electron/**/*.map"
+  ],
+  "publish": {
+    "provider": "github",
+    "owner": "lukehau",
+    "repo": "aws-org-designer"
+  },
+  "mac": {
+    "icon": "assets/icons/logo.icns",
+    "category": "public.app-category.developer-tools",
+    "target": [
+      {
+        "target": "dmg",
+        "arch": ["x64", "arm64"]
+      },
+      {
+        "target": "zip",
+        "arch": ["x64", "arm64"]
+      }
+    ],
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
+  },
+  "dmg": {
+    "background": "assets/dmg-background.png",
+    "window": {
+      "width": 400,
+      "height": 300
+    },
+    "contents": [
+      {
+        "x": 100,
+        "y": 130,
+        "type": "file"
+      },
+      {
+        "x": 300,
+        "y": 130,
+        "type": "link",
+        "path": "/Applications"
+      }
+    ],
+    "iconSize": 80
+  },
+  "win": {
+    "icon": "assets/icons/logo.ico",
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "artifactName": "${productName}-${version}-${os}-${arch}-setup.${ext}"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": true,
+    "allowToChangeInstallationDirectory": true,
+    "runAfterFinish": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true
+  }
+}

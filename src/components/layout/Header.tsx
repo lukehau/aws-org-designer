@@ -5,8 +5,10 @@
 
 import { Button } from "@/components/ui/button"
 import { Menu, X, Download, Upload, Trash2, Camera } from "lucide-react"
-import { AWSIcon } from "@/components/icons/aws-icons"
+
 import { useAppStore } from "@/store"
+import logoLight from "/logo.svg?url"
+import logoDark from "/logo-dark.svg?url"
 import { useState, useRef } from "react"
 import { toast } from "sonner"
 
@@ -94,18 +96,17 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
                 )}
               </Button>
             )}
-            <AWSIcon type="root" size="xlg" className="flex-shrink-0" />
+            <picture className="flex-shrink-0">
+              <source srcSet={logoDark} media="(prefers-color-scheme: dark)" />
+              <img src={logoLight} alt="Logo" className="h-10 w-10" />
+            </picture>
             <div className="min-w-0">
               <h1 className="text-lg sm:text-xl font-semibold truncate">AWS Organization Designer</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                {organization ? (
-                  <span>
-                    {organization.name} - v{getOrganizationVersion()}
-                  </span>
-                ) : (
-                  'No organization loaded'
-                )}
-              </p>
+              {organization && (
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  {organization.name} - v{getOrganizationVersion()}
+                </p>
+              )}
             </div>
           </div>
 
