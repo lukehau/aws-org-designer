@@ -41,16 +41,28 @@ jobs:
       - name: Wait for Amplify deployment
         run: |
           JOB_ID="${{ steps.start-job.outputs.job_id }}"
+          APP_ID="${{ vars.AMPLIFY_APP_ID }}"
           echo "Waiting for job $JOB_ID to complete..."
           
           while true; do
-            STATUS=$(aws amplify get-job --app-id ${{ vars.AMPLIFY_APP_ID }} --branch-name main --job-id $JOB_ID --query 'job.summary.status' --output text)
+            STATUS=$(aws amplify get-job --app-id $APP_ID --branch-name main --job-id $JOB_ID --query 'job.summary.status' --output text)
             echo "Status: $STATUS"
             
             if [ "$STATUS" = "SUCCEED" ]; then
               echo "Amplify deployment succeeded"
               exit 0
             elif [ "$STATUS" = "FAILED" ] || [ "$STATUS" = "CANCELLED" ]; then
+              echo "::group::Amplify Build Logs"
+              aws amplify get-job --app-id $APP_ID --branch-name main --job-id $JOB_ID --query 'job.steps[*].{step:stepName,status:status,logUrl:logUrl}' --output table
+              echo ""
+              echo "Fetching detailed logs for failed steps..."
+              STEPS=$(aws amplify get-job --app-id $APP_ID --branch-name main --job-id $JOB_ID --query 'job.steps[?status==`FAILED`].logUrl' --output text)
+              for LOG_URL in $STEPS; do
+                echo "--- Log from: $LOG_URL ---"
+                curl -s "$LOG_URL" | tail -100
+                echo ""
+              done
+              echo "::endgroup::"
               echo "Amplify deployment failed with status: $STATUS"
               exit 1
             fi
@@ -70,7 +82,9 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          rm -f package-lock.json
+          npm install
 
       - name: Build and release for macOS
         env:
@@ -89,7 +103,9 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          Remove-Item -Force package-lock.json -ErrorAction SilentlyContinue
+          npm install
 
       - name: Build and release for Windows
         env:
