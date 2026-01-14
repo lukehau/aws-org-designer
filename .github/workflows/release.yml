@@ -79,12 +79,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Install dependencies
-        run: |
-          rm -f package-lock.json
-          npm install
+        run: npm ci
 
       - name: Build and release for macOS
         env:
@@ -100,12 +98,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Install dependencies
-        run: |
-          Remove-Item -Force package-lock.json -ErrorAction SilentlyContinue
-          npm install
+        run: npm ci
 
       - name: Build and release for Windows
         env:
