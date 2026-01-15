@@ -12,7 +12,7 @@ import { LoadingOverlay } from '@/components/ui/loading-screen';
 import { Plus } from 'lucide-react';
 import { AWSIcon } from '@/components/icons/aws-icons';
 import { useAppStore } from '@/store';
-import { useErrorHandling } from '@/hooks/use-error-handling';
+import { useToastNotifications } from '@/hooks/use-toast-notifications';
 import { useAutoFocus } from '@/hooks/use-auto-focus';
 import type { OrganizationNode } from '@/types/organization';
 
@@ -36,7 +36,7 @@ export function NodeAdditionInterface({
     validateNodeCreation
   } = useAppStore();
 
-  const { handleFormSubmission, handleValidationResult } = useErrorHandling();
+  const { handleFormSubmission, handleValidationResult } = useToastNotifications();
 
   // Form validation setup
   const formValidation = useFormValidation(

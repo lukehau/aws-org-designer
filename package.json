@@ -12,18 +12,15 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "electron:dev": "electron-vite dev",
     "electron:build": "electron-vite build",
     "electron:preview": "electron-vite preview",
     "electron:pack": "electron-vite build && electron-builder --dir",
-    "electron:release": "electron-vite build && electron-builder --publish always",
     "electron:release:mac": "electron-vite build && electron-builder --mac --publish always",
-    "electron:release:win": "electron-vite build && electron-builder --win --publish always",
-    "cdk:install": "cd cdk && npm install",
-    "cdk:synth:dev": "cd cdk && npm run synth:dev",
-    "cdk:synth:prod": "cd cdk && npm run synth:prod",
-    "cdk:deploy:dev": "cd cdk && npm run deploy:dev",
-    "cdk:deploy:prod": "cd cdk && npm run deploy:prod"
+    "electron:release:win": "electron-vite build && electron-builder --win --publish always"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.2",
@@ -68,6 +65,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@types/jsdom": "^27.0.0",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.0",
@@ -78,14 +76,17 @@
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "fast-check": "^4.5.3",
     "globals": "^17.0.0",
+    "jsdom": "^27.4.0",
     "postcss": "^8.5.6",
     "rollup-plugin-visualizer": "^6.0.5",
     "tailwindcss": "^4.1.12",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2",
-    "vite-plugin-svgr": "^4.5.0"
+    "vite-plugin-svgr": "^4.5.0",
+    "vitest": "^4.0.17"
   },
   "overrides": {
     "tmp": "^0.2.3"

@@ -194,8 +194,9 @@ export class PersistenceManager {
 
   /**
    * Increment version number (minor version)
+   * @internal Exposed for testing
    */
-  private incrementVersion(currentVersion: string): string {
+  incrementVersion(currentVersion: string): string {
     const parts = currentVersion.split('.');
     const major = parseInt(parts[0]) || 1;
     const minor = parseInt(parts[1]) || 0;
@@ -205,8 +206,9 @@ export class PersistenceManager {
 
   /**
    * Sanitize filename for filesystem compatibility
+   * @internal Exposed for testing
    */
-  private sanitizeFilename(name: string): string {
+  sanitizeFilename(name: string): string {
     return name
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '-')

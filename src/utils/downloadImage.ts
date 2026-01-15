@@ -89,7 +89,6 @@ export async function downloadImage(
       button.style.display = '';
     });
     
-    console.error('Failed to download image:', error);
     throw error;
   }
 }
