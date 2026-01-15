@@ -4,6 +4,10 @@
   "productName": "AWS Org Designer",
   "copyright": "Copyright © 2025 Luke Hau",
   "asar": true,
+  "generateUpdatesFilesForAllChannels": false,
+  "releaseInfo": {
+    "releaseNotes": ""
+  },
   "directories": {
     "output": "release",
     "buildResources": "build"
@@ -24,15 +28,12 @@
       {
         "target": "dmg",
         "arch": ["x64", "arm64"]
-      },
-      {
-        "target": "zip",
-        "arch": ["x64", "arm64"]
       }
     ],
     "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
   },
   "dmg": {
+    "writeUpdateInfo": false,
     "title": "Install AWS Org Designer",
     "background": "build/background.png",
     "window": {
@@ -70,6 +71,7 @@
     "allowToChangeInstallationDirectory": true,
     "runAfterFinish": true,
     "createDesktopShortcut": true,
-    "createStartMenuShortcut": true
+    "createStartMenuShortcut": true,
+    "differentialPackage": false
   }
 }
