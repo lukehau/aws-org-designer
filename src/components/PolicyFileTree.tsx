@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { ChevronRight } from "lucide-react";
 import { cn } from '@/lib/utils';
-import { useAppStore } from '@/store';
+import { useStore } from '@/store';
 import { AwsPolicyIcon } from '@/components/icons/aws-icons';
 import type { Policy } from '@/types/policy';
 import type { OrganizationNode } from '@/types/organization';
@@ -17,7 +17,7 @@ interface PolicyFileTreeProps {
 }
 
 export function PolicyFileTree({ selectedNode, onViewPolicy }: PolicyFileTreeProps) {
-  const { getPoliciesByType } = useAppStore();
+  const { getPoliciesByType } = useStore();
   
   const scpPolicies = getPoliciesByType('scp');
   const rcpPolicies = getPoliciesByType('rcp');

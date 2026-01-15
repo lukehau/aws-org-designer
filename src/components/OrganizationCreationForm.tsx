@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus } from 'lucide-react';
 import { AWSIcon } from '@/components/icons/aws-icons';
-import { useAppStore } from '@/store';
+import { useStore } from '@/store';
 import { useAutoFocus } from '@/hooks/use-auto-focus';
 
 interface OrganizationCreationFormProps {
@@ -18,7 +18,7 @@ interface OrganizationCreationFormProps {
 export function OrganizationCreationForm({ onCancel }: OrganizationCreationFormProps) {
   const [organizationName, setOrganizationName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
-  const { createOrganization } = useAppStore();
+  const { createOrganization } = useStore();
   const nameInputRef = useAutoFocus<HTMLInputElement>();
 
   const handleSubmit = async (e: React.FormEvent) => {

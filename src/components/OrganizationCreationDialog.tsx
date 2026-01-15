@@ -4,12 +4,12 @@
  */
 
 import { useState } from 'react';
-import { useAppStore } from '@/store';
+import { useStore } from '@/store';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { OrganizationCreationForm } from './OrganizationCreationForm';
 
 export function OrganizationCreationDialog() {
-  const { organization } = useAppStore();
+  const { organization } = useStore();
   // Derive dialog visibility from organization state - no need for effect
   const [manuallyDismissed, setManuallyDismissed] = useState(false);
   const showDialog = !organization && !manuallyDismissed;

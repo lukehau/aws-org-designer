@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => {
           manualChunks: {
             vendor: ['react', 'react-dom', 'zustand'],
             xyflow: ['@xyflow/react', 'dagre'],
-            ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-select', '@radix-ui/react-tooltip', '@radix-ui/react-alert-dialog', '@radix-ui/react-collapsible', '@radix-ui/react-label', '@radix-ui/react-progress', '@radix-ui/react-radio-group', '@radix-ui/react-separator', '@radix-ui/react-slot', '@radix-ui/react-switch', '@radix-ui/react-toast', 'sonner', 'cmdk'],
+            ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-select', '@radix-ui/react-tooltip', '@radix-ui/react-alert-dialog', '@radix-ui/react-collapsible', '@radix-ui/react-label', '@radix-ui/react-radio-group', '@radix-ui/react-separator', '@radix-ui/react-slot', '@radix-ui/react-switch', 'sonner', 'cmdk'],
             icons: ['lucide-react'],
             // Note: CodeMirror (editor) is intentionally excluded from manualChunks
             // to allow lazy loading via React.lazy() in PolicyTab.tsx

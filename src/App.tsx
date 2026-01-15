@@ -8,7 +8,7 @@ import { ErrorPanel } from '@/components/ErrorPanel'
 import { ThemeProvider } from '@/components/theme-provider'
 
 import { Toaster } from '@/components/ui/sonner'
-import { useAppStore } from '@/store'
+import { useStore } from '@/store'
 
 // Import Driver.js CSS
 import 'driver.js/dist/driver.css'
@@ -25,7 +25,7 @@ function App() {
     toggleSidebar,
     setSidebarOpen,
     initializeFromLocalStorage,
-  } = useAppStore()
+  } = useStore()
 
   // Initialize persistence system on app startup
   useEffect(() => {

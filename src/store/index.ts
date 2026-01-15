@@ -23,7 +23,7 @@ export interface AppState extends OrganizationSlice, PolicySlice, UISlice, Valid
 /**
  * Main application store
  */
-export const useAppStore = create<AppState>()(
+export const useStore = create<AppState>()(
   devtools(
     (...args) => ({
       ...createOrganizationSlice(...args),
@@ -53,7 +53,7 @@ let previousState: {
 
 let saveTimeout: NodeJS.Timeout | null = null;
 
-useAppStore.subscribe((state) => {
+useStore.subscribe((state) => {
   // Only auto-save after initialization and when relevant data changes
   if (state.isInitialized && (
     state.organization !== previousState.organization ||
@@ -88,9 +88,6 @@ export type { UISlice } from './uiSlice';
 export type { ValidationSlice } from './validationSlice';
 export type { PersistenceSlice } from './persistenceSlice';
 
-// Export store as both useAppStore and useStore for compatibility
-export const useStore = useAppStore;
-
 // Expose store globally for tutorial access.
 // The tutorial system (Driver.js in tutorialConfig.ts) needs to access store methods
 // to control UI state during the tutorial (e.g., toggling policy badges, selecting nodes).
@@ -99,8 +96,8 @@ export const useStore = useAppStore;
 if (typeof window !== 'undefined') {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (window as any).__appStore = {
-    getState: () => useAppStore.getState(),
-    setState: useAppStore.setState,
-    subscribe: useAppStore.subscribe,
+    getState: () => useStore.getState(),
+    setState: useStore.setState,
+    subscribe: useStore.subscribe,
   };
 }

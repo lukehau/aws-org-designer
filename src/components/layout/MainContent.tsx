@@ -1,13 +1,13 @@
 import { OrganizationTreeProvider } from "@/components/OrganizationTree"
 import { ContentLoadingScreen } from "@/components/ui/loading-screen"
-import { useAppStore } from "@/store"
+import { useStore } from "@/store"
 
 interface MainContentProps {
   children?: React.ReactNode
 }
 
 export function MainContent({ children }: MainContentProps) {
-  const { isLoading } = useAppStore()
+  const { isLoading } = useStore()
   
   return (
     <main className="h-full bg-card min-w-0">

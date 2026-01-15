@@ -15,7 +15,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { ValidationMessage } from '@/components/ui/form-validation';
 import { Edit, Plus, Trash2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useAppStore } from '@/store';
+import { useStore } from '@/store';
 import type { OrganizationNode } from '@/types/organization';
 import type { Policy, PolicyType } from '@/types/policy';
 import { PolicyFileTree } from './PolicyFileTree';
@@ -63,7 +63,7 @@ export function PolicyTab({ selectedNode }: PolicyTabProps) {
 
   const handleDeleteConfirm = () => {
     if (policyToDelete) {
-      const { deletePolicy } = useAppStore.getState();
+      const { deletePolicy } = useStore.getState();
       deletePolicy(policyToDelete.id);
 
       // Show success toast
@@ -166,7 +166,7 @@ function PolicyCreateForm({ onSuccess }: PolicyCreateFormProps) {
   const [jsonError, setJsonError] = useState<string | null>(null);
   const [nameError, setNameError] = useState<string | null>(null);
 
-  const { createPolicy, validatePolicyName } = useAppStore();
+  const { createPolicy, validatePolicyName } = useStore();
   const config = getPolicyConfig(policyType);
 
   // Update content when policy type changes
@@ -322,7 +322,7 @@ export function PolicyViewer({ policy, onDeletePolicy, onClose }: PolicyViewerPr
   const [jsonError, setJsonError] = useState<string | null>(null);
   const [nameError, setNameError] = useState<string | null>(null);
   const config = getPolicyConfig(policy.type);
-  const { updatePolicy, validatePolicyName } = useAppStore();
+  const { updatePolicy, validatePolicyName } = useStore();
 
   // Check if this is a default policy
   const isDefaultPolicy = policy.id === 'default-scp-full-access' || policy.id === 'default-rcp-full-access';

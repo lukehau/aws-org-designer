@@ -8,26 +8,11 @@ import type { ReactFlowInstance } from '@xyflow/react';
 import { getPersistenceManager } from '@/lib/persistence';
 import { downloadImage, generateImageFilename } from '@/utils/downloadImage';
 
-// Toast functionality moved to Sonner
-
-/**
- * Loading operation types
- */
-export interface LoadingOperation {
-  id: string;
-  type: 'save' | 'load' | 'validate' | 'create' | 'update' | 'delete';
-  message: string;
-  progress?: number;
-  startedAt: Date;
-}
-
 /**
  * UI state and actions
  */
 export interface UISlice {
   // State
-  loadingOperations: LoadingOperation[];
-  errors: string[];
   viewMode: 'tree' | 'list';
   sidebarOpen: boolean;
   selectedPolicyType: 'scp' | 'rcp' | null;
@@ -40,19 +25,6 @@ export interface UISlice {
   tutorialActive: boolean;
   tutorialCompleted: boolean;
   reactFlowInstance: ReactFlowInstance | null;
-  
-  // Loading actions
-  startLoadingOperation: (operation: Omit<LoadingOperation, 'id' | 'startedAt'>) => string;
-  updateLoadingOperation: (id: string, updates: Partial<LoadingOperation>) => void;
-  finishLoadingOperation: (id: string) => void;
-  clearLoadingOperations: () => void;
-  
-  // Error actions
-  addError: (error: string) => void;
-  removeError: (index: number) => void;
-  clearErrors: () => void;
-  
-  // Toast functionality moved to Sonner
   
   // View mode actions
   setViewMode: (mode: 'tree' | 'list') => void;
@@ -91,19 +63,7 @@ export interface UISlice {
   
   // Utility actions
   resetUI: () => void;
-  
-  // Helper functions
-  hasActiveOperations: () => boolean;
-  getOperationsByType: (type: LoadingOperation['type']) => LoadingOperation[];
-  // Toast functionality moved to Sonner
 }
-
-/**
- * Generate unique ID for operations and toasts
- */
-const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-
 
 /**
  * Detect if device is mobile based on screen width
@@ -124,8 +84,6 @@ export const createUISlice: StateCreator<
   UISlice
 > = (set, get) => ({
   // Initial state
-  loadingOperations: [],
-  errors: [],
   viewMode: 'tree',
   sidebarOpen: !isMobileDevice(), // Close sidebar by default on mobile
   selectedPolicyType: null,
@@ -138,61 +96,6 @@ export const createUISlice: StateCreator<
   tutorialActive: false,
   tutorialCompleted: false,
   reactFlowInstance: null,
-
-  // Loading actions
-  startLoadingOperation: (operation) => {
-    const id = generateId();
-    const { loadingOperations } = get();
-    const newOperation: LoadingOperation = {
-      ...operation,
-      id,
-      startedAt: new Date(),
-    };
-    
-    set({ 
-      loadingOperations: [...loadingOperations, newOperation],
-    });
-    
-    return id;
-  },
-
-  updateLoadingOperation: (id, updates) => {
-    const { loadingOperations } = get();
-    const updatedOperations = loadingOperations.map(op =>
-      op.id === id ? { ...op, ...updates } : op
-    );
-    set({ loadingOperations: updatedOperations });
-  },
-
-  finishLoadingOperation: (id) => {
-    const { loadingOperations } = get();
-    const updatedOperations = loadingOperations.filter(op => op.id !== id);
-    set({ 
-      loadingOperations: updatedOperations,
-    });
-  },
-
-  clearLoadingOperations: () => {
-    set({ loadingOperations: [] });
-  },
-
-  // Error actions
-  addError: (error: string) => {
-    const { errors } = get();
-    set({ errors: [...errors, error] });
-  },
-
-  removeError: (index: number) => {
-    const { errors } = get();
-    const updatedErrors = errors.filter((_, i) => i !== index);
-    set({ errors: updatedErrors });
-  },
-
-  clearErrors: () => {
-    set({ errors: [] });
-  },
-
-  // Toast functionality moved to Sonner
 
   // View mode actions
   setViewMode: (mode: 'tree' | 'list') => {
@@ -294,8 +197,6 @@ export const createUISlice: StateCreator<
   // Utility actions
   resetUI: () => {
     set({
-      loadingOperations: [],
-      errors: [],
       viewMode: 'tree',
       sidebarOpen: !isMobileDevice(), // Respect mobile state on reset
       selectedPolicyType: null,
@@ -309,17 +210,4 @@ export const createUISlice: StateCreator<
       // Don't reset tutorialCompleted on UI reset
     });
   },
-
-  // Helper functions
-  hasActiveOperations: () => {
-    const { loadingOperations } = get();
-    return loadingOperations.length > 0;
-  },
-
-  getOperationsByType: (type) => {
-    const { loadingOperations } = get();
-    return loadingOperations.filter(op => op.type === type);
-  },
-
-  // Toast functionality moved to Sonner
 });

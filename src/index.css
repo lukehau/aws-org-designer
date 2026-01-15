@@ -193,40 +193,6 @@
     @apply bg-muted-foreground/50;
   }
 
-  /* Responsive text utilities */
-  .text-responsive-xs {
-    @apply text-xs sm:text-sm;
-  }
-
-  .text-responsive-sm {
-    @apply text-sm sm:text-base;
-  }
-
-  .text-responsive-base {
-    @apply text-base sm:text-lg;
-  }
-
-  .text-responsive-lg {
-    @apply text-lg sm:text-xl;
-  }
-
-  /* Consistent spacing utilities */
-  .space-y-responsive {
-    @apply space-y-3 sm:space-y-4;
-  }
-
-  .p-responsive {
-    @apply p-3 sm:p-4;
-  }
-
-  .px-responsive {
-    @apply px-3 sm:px-4;
-  }
-
-  .py-responsive {
-    @apply py-3 sm:py-4;
-  }
-
   /* React Flow handle size customization */
   .react-flow .react-flow__handle {
     width: 10px !important;
