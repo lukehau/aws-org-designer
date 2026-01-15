@@ -18,8 +18,8 @@
     "electron:dev": "electron-vite dev",
     "electron:build:mac": "electron-vite build && electron-builder --mac --publish never",
     "electron:build:win": "electron-vite build && electron-builder --win --publish never",
-    "electron:release:mac": "electron-vite build && electron-builder --mac --publish onTagOrDraft",
-    "electron:release:win": "electron-vite build && electron-builder --win --publish onTagOrDraft"
+    "electron:release:mac": "electron-vite build && electron-builder --mac --publish onTag",
+    "electron:release:win": "electron-vite build && electron-builder --win --publish onTag"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.2",
