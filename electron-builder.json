@@ -33,6 +33,7 @@
     "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
   },
   "dmg": {
+    "title": "Install AWS Org Designer",
     "background": "build/background.png",
     "window": {
       "width": 400,
