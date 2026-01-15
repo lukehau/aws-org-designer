@@ -29,7 +29,6 @@ dist-electron
 # TypeScript build info
 *.tsbuildinfo
 
-# Electron Forge
-out/
+# Electron build artifacts
 .vite/
 release/

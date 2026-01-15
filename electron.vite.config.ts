@@ -26,6 +26,9 @@ export default defineConfig({
       rollupOptions: {
         input: {
           index: path.resolve(__dirname, 'src/preload/index.ts')
+        },
+        output: {
+          format: 'cjs'
         }
       }
     }

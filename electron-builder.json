@@ -18,7 +18,7 @@
     "repo": "aws-org-designer"
   },
   "mac": {
-    "icon": "assets/icons/logo.icns",
+    "icon": "build/logo.icns",
     "category": "public.app-category.developer-tools",
     "target": [
       {
@@ -33,7 +33,7 @@
     "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
   },
   "dmg": {
-    "background": "assets/dmg-background.png",
+    "background": "build/background.png",
     "window": {
       "width": 400,
       "height": 300
@@ -54,7 +54,7 @@
     "iconSize": 80
   },
   "win": {
-    "icon": "assets/icons/logo.ico",
+    "icon": "build/logo.ico",
     "target": [
       {
         "target": "nsis",

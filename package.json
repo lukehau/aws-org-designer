@@ -3,7 +3,7 @@
   "productName": "AWS Org Designer",
   "version": "1.0.2",
   "description": "Visual designer and management tool for AWS Organizations",
-  "author": "Luke Hau",
+  "author": "Luke Harris",
   "private": true,
   "type": "module",
   "main": "dist-electron/main/index.js",
