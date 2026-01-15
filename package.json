@@ -1,7 +1,7 @@
 {
   "name": "aws-org-designer",
   "productName": "AWS Org Designer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Visual designer and management tool for AWS Organizations",
   "author": "Luke Harris",
   "private": true,
