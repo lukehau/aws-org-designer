@@ -6,7 +6,7 @@
 import { Button } from "@/components/ui/button"
 import { Menu, X, Download, Upload, Trash2, Camera } from "lucide-react"
 
-import { useAppStore } from "@/store"
+import { useStore } from "@/store"
 import logoLight from "/logo.svg?url"
 import logoDark from "/logo-dark.svg?url"
 import { useState, useRef } from "react"
@@ -18,7 +18,7 @@ interface HeaderProps {
 }
 
 export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
-  const { organization, exportOrganization, importOrganization, clearOrganization, isSaving, getOrganizationVersion, downloadOrganizationImage } = useAppStore()
+  const { organization, exportOrganization, importOrganization, clearOrganization, isSaving, getOrganizationVersion, downloadOrganizationImage } = useStore()
   const [fileInputKey, setFileInputKey] = useState(0)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDownloadingImage, setIsDownloadingImage] = useState(false)

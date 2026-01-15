@@ -2,7 +2,7 @@ import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 
-import { useAppStore } from "@/store"
+import { useStore } from "@/store"
 
 import { PolicyTab } from "@/components/PolicyTab"
 import { AttachmentsTab } from "@/components/AttachmentsTab"
@@ -20,7 +20,7 @@ const GitHubIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export function Sidebar() {
 
   const [activeTab, setActiveTab] = useState<'policies' | 'attachments'>('policies')
-  const { selectedNodeId, getNode } = useAppStore()
+  const { selectedNodeId, getNode } = useStore()
 
   const selectedNode = selectedNodeId ? getNode(selectedNodeId) : null
 

@@ -41,12 +41,6 @@ export interface PolicySlice {
   refreshAllNodesPolicyData: () => void;
   refreshInheritanceTrailCache: (nodeId: string) => void;
   clearInheritanceTrailCache: () => void;
-  
-  // Enhanced inheritance functions
-  getPolicyInheritanceChain: (nodeId: string, policyId: string) => Array<{ nodeId: string; nodeName: string; isDirect: boolean }>;
-  getEffectivePolicyCount: (nodeId: string, type: 'scp' | 'rcp') => number;
-  getAllAffectedNodes: (policyId: string) => Array<{ nodeId: string; isDirect: boolean; inheritedFrom?: string }>;
-  refreshInheritanceForNode: () => void;
 }
 
 /**
@@ -331,99 +325,6 @@ export const createPolicySlice: StateCreator<
     );
   },
 
-  // Enhanced inheritance functions
-  getPolicyInheritanceChain: (nodeId: string, policyId: string) => {
-    const state = get();
-    const { getNodePath, isPolicyAttachedToNode } = state;
-    
-    const nodePath = getNodePath(nodeId);
-    const chain: Array<{ nodeId: string; nodeName: string; isDirect: boolean }> = [];
-    
-    // Check each node in the path from root to target
-    nodePath.forEach(node => {
-      const isDirectlyAttached = isPolicyAttachedToNode(node.id, policyId);
-      if (isDirectlyAttached) {
-        chain.push({
-          nodeId: node.id,
-          nodeName: node.name,
-          isDirect: node.id === nodeId,
-        });
-      }
-    });
-    
-    return chain;
-  },
-
-  getEffectivePolicyCount: (nodeId: string, type: 'scp' | 'rcp') => {
-    const state = get();
-    const { getNodeInheritedPolicies } = state;
-    
-    const inheritedPolicies = getNodeInheritedPolicies(nodeId);
-    return type === 'scp' 
-      ? inheritedPolicies.effectivePolicies.scps.length
-      : inheritedPolicies.effectivePolicies.rcps.length;
-  },
-
-  getAllAffectedNodes: (policyId: string) => {
-    const state = get();
-    const { organization, policyAttachments, getNodeChildren } = state;
-    
-    if (!organization) return [];
-    
-    const affectedNodes: Array<{ nodeId: string; isDirect: boolean; inheritedFrom?: string }> = [];
-    
-    // Find all nodes where this policy is directly attached
-    const directAttachments = policyAttachments.filter(
-      attachment => attachment.policyId === policyId
-    );
-    
-    directAttachments.forEach(attachment => {
-      affectedNodes.push({
-        nodeId: attachment.nodeId,
-        isDirect: true,
-      });
-      
-      // Find all child nodes that inherit this policy
-      const collectChildNodes = (parentId: string) => {
-        const children = getNodeChildren(parentId);
-        children.forEach(child => {
-          affectedNodes.push({
-            nodeId: child.id,
-            isDirect: false,
-            inheritedFrom: attachment.nodeId,
-          });
-          collectChildNodes(child.id);
-        });
-      };
-      
-      collectChildNodes(attachment.nodeId);
-    });
-    
-    return affectedNodes;
-  },
-
-  refreshInheritanceForNode: () => {
-    // This function triggers a re-calculation of inheritance
-    // by updating the store state, which will cause components to re-render
-    // with fresh inheritance data
-    const state = get();
-    const { organization } = state;
-    
-    if (!organization) return;
-    
-    // Force a state update to trigger re-calculation and visualization updates
-    // This ensures that policy badges, inheritance trails, and organization diagram
-    // reflect policy changes immediately
-    set({
-      organization: {
-        ...organization,
-        nodes: {
-          ...organization.nodes,
-        },
-      },
-    });
-  },
-
   refreshAllNodesPolicyData: () => {
     const state = get();
     const { organization, getNodeAttachedPolicies } = state;
@@ -494,6 +395,4 @@ export const createPolicySlice: StateCreator<
   clearInheritanceTrailCache: () => {
     set({ inheritanceTrailCache: new Map() });
   },
-
-
 });

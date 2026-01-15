@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { toast } from 'sonner'
 import { Header } from '@/components/layout/Header'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { MainContent } from '@/components/layout/MainContent'
@@ -7,9 +8,7 @@ import { ErrorPanel } from '@/components/ErrorPanel'
 import { ThemeProvider } from '@/components/theme-provider'
 
 import { Toaster } from '@/components/ui/sonner'
-import { useAppStore } from '@/store'
-import { setupGlobalErrorHandling, errorHandlingService, ErrorCategory, ErrorSeverity } from '@/services/errorHandlingService'
-import { useSonnerToast } from '@/hooks/use-sonner-toast'
+import { useStore } from '@/store'
 
 // Import Driver.js CSS
 import 'driver.js/dist/driver.css'
@@ -26,37 +25,12 @@ function App() {
     toggleSidebar,
     setSidebarOpen,
     initializeFromLocalStorage,
-  } = useAppStore()
+  } = useStore()
 
-  const { 
-    showErrorToast, 
-    showValidationErrorToast 
-  } = useSonnerToast()
-
-  // Initialize persistence system and error handling on app startup
+  // Initialize persistence system on app startup
   useEffect(() => {
-    // Setup global error handling
-    setupGlobalErrorHandling()
-    
-    // Register error service callback to show toast notifications
-    errorHandlingService.onError('app-toast-handler', (error) => {
-      const toast = errorHandlingService.createToastFromError(error)
-      if (error.category === ErrorCategory.VALIDATION) {
-        // For validation errors, we might want to show them differently
-        console.log('Validation error handled:', error)
-      } else {
-        showErrorToast(toast.title, toast.description, toast.action)
-      }
-    })
-
-    // Initialize from localStorage
     initializeFromLocalStorage()
-
-    return () => {
-      // Cleanup error handler
-      errorHandlingService.offError('app-toast-handler')
-    }
-  }, [showErrorToast, initializeFromLocalStorage])
+  }, [initializeFromLocalStorage])
 
   // Handle window resize for responsive sidebar behavior
   useEffect(() => {
@@ -93,39 +67,40 @@ function App() {
       // Auto-show error panel when validation errors occur
       setShowErrorPanel(true)
       
-      // Show toast for the first validation error
+      // Show toast for validation errors
       if (validationErrors.length === 1) {
-        showValidationErrorToast(validationErrors[0])
+        toast.error(validationErrors[0].message)
       } else if (validationErrors.length > 1) {
-        showErrorToast(
-          'Multiple Validation Issues',
-          `Found ${validationErrors.length} validation issues that need attention.`,
-          {
+        toast.error('Multiple Validation Issues', {
+          description: `Found ${validationErrors.length} validation issues that need attention.`,
+          action: {
             label: 'View Details',
             onClick: () => setShowErrorPanel(true),
-          }
-        )
+          },
+        })
       }
     }
-  }, [validationErrors, hasValidationErrors, setShowErrorPanel, showValidationErrorToast, showErrorToast])
+  }, [validationErrors, hasValidationErrors, setShowErrorPanel])
 
-  const handleAppError = (error: Error, errorInfo: any) => {
-    // Handle React error boundary errors
-    errorHandlingService.handleException(
-      error, 
-      ErrorCategory.SYSTEM, 
-      ErrorSeverity.HIGH,
-      { errorInfo, component: 'App' }
-    )
+  const handleAppError = (error: Error, errorInfo: React.ErrorInfo) => {
+    // Log error for debugging
+    console.error('App Error:', error, errorInfo)
+    toast.error('An unexpected error occurred', {
+      description: error.message,
+    })
   }
 
-
+  const handleComponentError = (component: string) => (error: Error, errorInfo: React.ErrorInfo) => {
+    console.error(`${component} Error:`, error, errorInfo)
+    toast.error(`Error in ${component}`, {
+      description: error.message,
+    })
+  }
 
   return (
     <ThemeProvider>
       <ErrorBoundary onError={handleAppError}>
         <div className="h-screen flex flex-col bg-background">
-          {/* Loading Screen - Removed: Now handled in MainContent */}
           {/* Skip link for screen readers */}
           <a 
             href="#main-content" 
@@ -150,9 +125,7 @@ function App() {
               lg:relative lg:translate-x-0 lg:z-auto
               ${sidebarOpen ? 'lg:flex-shrink-0' : 'lg:w-0 lg:overflow-hidden'}
             `}>
-              <ErrorBoundary onError={(error, errorInfo) => 
-                errorHandlingService.handleException(error, ErrorCategory.SYSTEM, ErrorSeverity.MEDIUM, { errorInfo, component: 'Sidebar' })
-              }>
+              <ErrorBoundary onError={handleComponentError('Sidebar')}>
                 <Sidebar />
               </ErrorBoundary>
             </div>
@@ -168,9 +141,7 @@ function App() {
             
             {/* Main Content Area */}
             <main id="main-content" className="flex-1 min-w-0" role="main" aria-label="Organization visualization">
-              <ErrorBoundary onError={(error, errorInfo) => 
-                errorHandlingService.handleException(error, ErrorCategory.SYSTEM, ErrorSeverity.MEDIUM, { errorInfo, component: 'MainContent' })
-              }>
+              <ErrorBoundary onError={handleComponentError('MainContent')}>
                 <MainContent />
               </ErrorBoundary>
             </main>

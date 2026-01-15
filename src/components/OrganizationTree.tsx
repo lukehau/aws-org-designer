@@ -6,15 +6,15 @@
 
 import { useCallback, useEffect, useMemo, useState, memo } from 'react';
 
-// Simple debounce utility to avoid lodash dependency issues
-const debounce = <T extends (...args: any[]) => any>(
-  func: T,
+// Simple debounce utility for position updates
+const debounce = (
+  func: (nodeId: string, position: { x: number; y: number }) => void,
   wait: number
-): ((...args: Parameters<T>) => void) => {
+): ((nodeId: string, position: { x: number; y: number }) => void) => {
   let timeout: ReturnType<typeof setTimeout>;
-  return (...args: Parameters<T>) => {
+  return (nodeId: string, position: { x: number; y: number }) => {
     clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
+    timeout = setTimeout(() => func(nodeId, position), wait);
   };
 };
 import { getLayoutedElements } from '@/utils/layout';
@@ -45,7 +45,7 @@ import type {
   ConnectionMode,
 } from '@xyflow/react';
 
-import { useAppStore } from '@/store';
+import { useStore } from '@/store';
 import type { OrganizationNode as OrgNode } from '@/types/organization';
 import type { Policy } from '@/types/policy';
 import { OrganizationNode } from './OrganizationNode';
@@ -78,7 +78,7 @@ const nodeTypes = {
  * Memoized for performance with large datasets
  */
 const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?: (node: OrgNode) => void, onPolicyClick?: (policyId: string) => void, theme?: 'dark' | 'light') => {
-  const { organization, updateNodePosition, inheritanceTrailNodeId, getNodePath, policies, policyAttachments } = useAppStore();
+  const { organization, updateNodePosition, inheritanceTrailNodeId, getNodePath } = useStore();
 
   const { nodes, edges } = useMemo(() => {
     if (!organization) {
@@ -112,7 +112,7 @@ const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?:
       if (orgNode.parentId) {
         // Determine if this edge should be transparent based on inheritance trail
         let edgeOpacity = 1;
-        let edgeColor = defaultEdgeColor;
+        const edgeColor = defaultEdgeColor;
 
         if (inheritanceTrailNodeId) {
           const selectedNodePath = getNodePath(inheritanceTrailNodeId);
@@ -140,7 +140,7 @@ const useOrganizationFlow = (onAddNode?: (node: OrgNode) => void, onDeleteNode?:
     });
 
     return { nodes: flowNodes, edges: flowEdges };
-  }, [organization, onAddNode, onDeleteNode, onPolicyClick, inheritanceTrailNodeId, getNodePath, policies, policyAttachments, theme]);
+  }, [organization, onAddNode, onDeleteNode, onPolicyClick, inheritanceTrailNodeId, getNodePath, theme]);
 
   // Debounced position update for smooth dragging
   const debouncedUpdatePosition = useMemo(
@@ -182,7 +182,7 @@ const OrganizationTreeInternal = memo(() => {
     getPolicy,
     deletePolicy,
     setReactFlowInstance
-  } = useAppStore();
+  } = useStore();
   const reactFlowInstance = useReactFlow();
   const { setCenter, getNode, getViewport, zoomIn, zoomOut, fitView } = reactFlowInstance;
 
@@ -199,7 +199,7 @@ const OrganizationTreeInternal = memo(() => {
 
   const handleDeleteConfirm = useCallback(() => {
     if (nodeToDelete) {
-      const { deleteNode } = useAppStore.getState();
+      const { deleteNode } = useStore.getState();
       deleteNode(nodeToDelete.id);
       setDeleteDialogOpen(false);
       setNodeToDelete(null);
@@ -344,7 +344,7 @@ const OrganizationTreeInternal = memo(() => {
 
       if (!source || !target || source === target) return false;
 
-      const { organization, validateNodeCreation } = useAppStore.getState();
+      const { organization, validateNodeCreation } = useStore.getState();
       if (!organization) return false;
 
       const sourceNode = organization.nodes[source];
@@ -382,7 +382,7 @@ const OrganizationTreeInternal = memo(() => {
       console.log('Moving node', target, 'to parent', source);
 
       // Move the target node to be a child of the source node
-      const { moveNode } = useAppStore.getState();
+      const { moveNode } = useStore.getState();
       moveNode(target, source);
     },
     []
@@ -412,7 +412,7 @@ const OrganizationTreeInternal = memo(() => {
     setNodes(layoutedNodes);
 
     // Update store positions (without debounce for immediate persistence)
-    const { updateNodePosition: storeUpdatePosition } = useAppStore.getState();
+    const { updateNodePosition: storeUpdatePosition } = useStore.getState();
     layoutedNodes.forEach((node) => {
       storeUpdatePosition(node.id, node.position);
     });

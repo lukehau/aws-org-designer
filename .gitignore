@@ -23,6 +23,9 @@ dist-electron
 *.sln
 *.sw?
 
+# Kiro
+.kiro/specs/
+
 # TypeScript build info
 *.tsbuildinfo
 

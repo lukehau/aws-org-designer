@@ -253,21 +253,6 @@ export const createOrganizationSlice: StateCreator<
     };
 
     const newPosition = calculateNewNodePosition(parentNode, name);
-    
-    // Debug logging
-    console.log(`Adding node "${name}" under "${parentNode.name}"`);
-    console.log(`Parent has ${parentNode.children.length} existing children:`, parentNode.children);
-    console.log(`Estimated width for "${name}": ${estimateNodeWidth(name)}px`);
-    console.log(`New position:`, newPosition);
-    if (parentNode.children.length > 0) {
-      const existingSiblings = parentNode.children.map(childId => organization.nodes[childId]);
-      console.log(`Existing sibling positions:`, existingSiblings.map(s => ({ 
-        name: s.name, 
-        x: s.position.x, 
-        y: s.position.y,
-        estimatedWidth: estimateNodeWidth(s.name)
-      })));
-    }
 
     const newNode: OrganizationNode = {
       id: nodeId,

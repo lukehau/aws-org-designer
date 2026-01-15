@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { MultiSelect } from '@/components/ui/multi-select';
 import type { MultiSelectOption, MultiSelectRef } from '@/components/ui/multi-select';
 import { PolicyBadge } from '@/components/ui/policy-badge';
-import { useAppStore } from '@/store';
+import { useStore } from '@/store';
 import { toast } from 'sonner';
 import { getPolicyPluralName, getPolicyAbbreviation } from '@/config/policyConfig';
 
@@ -77,7 +77,7 @@ function PolicySection({ policyType, selectedNode }: PolicySectionProps) {
     detachPolicy,
     validatePolicyAttachment,
     validatePolicyDetachment
-  } = useAppStore();
+  } = useStore();
 
   // Ref for controlling the MultiSelect component
   const multiSelectRef = useRef<MultiSelectRef>(null);
@@ -240,7 +240,7 @@ interface InheritedPoliciesSectionProps {
 }
 
 function InheritedPoliciesSection({ selectedNode }: InheritedPoliciesSectionProps) {
-  const { getNodeInheritedPolicies, centerViewOnNode, getNode } = useAppStore();
+  const { getNodeInheritedPolicies, centerViewOnNode, getNode } = useStore();
 
   // Get inherited policies data
   const inheritedPoliciesData = useMemo(() => {

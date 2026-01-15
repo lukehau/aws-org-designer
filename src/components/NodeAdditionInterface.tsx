@@ -3,18 +3,18 @@
  * Provides interface for adding OUs and accounts as children to selected nodes
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-// import { Label } from '@/components/ui/label';
 import { FieldValidation, ValidationMessage, useFormValidation } from '@/components/ui/form-validation';
 import { LoadingOverlay } from '@/components/ui/loading-screen';
 import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
 import { AWSIcon } from '@/components/icons/aws-icons';
-import { useAppStore } from '@/store';
-import { useErrorHandling } from '@/hooks/use-error-handling';
+import { useStore } from '@/store';
 import { useAutoFocus } from '@/hooks/use-auto-focus';
 import type { OrganizationNode } from '@/types/organization';
+import type { ValidationResult } from '@/types/validation';
 
 interface NodeAdditionInterfaceProps {
   parentNode: OrganizationNode;
@@ -33,10 +33,37 @@ export function NodeAdditionInterface({
 
   const {
     addNode,
-    validateNodeCreation
-  } = useAppStore();
+    validateNodeCreation,
+    addValidationError,
+    clearValidationErrors,
+    setShowErrorPanel,
+  } = useStore();
 
-  const { handleFormSubmission, handleValidationResult } = useErrorHandling();
+  /**
+   * Handle validation results with user feedback
+   */
+  const handleValidationResult = useCallback((
+    result: ValidationResult,
+    showToast: boolean = true
+  ) => {
+    if (!result.isValid) {
+      result.errors.forEach(error => addValidationError(error));
+      
+      if (showToast) {
+        if (result.errors.length === 1) {
+          toast.error(result.errors[0].message);
+        } else {
+          toast.error('Validation Failed', {
+            description: `Found ${result.errors.length} validation issues.`,
+            action: {
+              label: 'View Details',
+              onClick: () => setShowErrorPanel(true),
+            },
+          });
+        }
+      }
+    }
+  }, [addValidationError, setShowErrorPanel]);
 
   // Form validation setup
   const formValidation = useFormValidation(
@@ -67,37 +94,23 @@ export function NodeAdditionInterface({
 
     // Validate node creation
     if (!validation.isValid) {
-      handleValidationResult(validation, true); // Show toast for submission validation
+      handleValidationResult(validation, true);
       return;
     }
 
-    // Submit form with error handling
-    const result = await handleFormSubmission(
-      {
-        parentId: parentNode.id,
-        nodeType,
-        nodeName: formValidation.values.nodeName.trim(),
-      },
-      async (data) => {
-        setIsCreating(true);
-        try {
-          addNode(data.parentId, data.nodeType, data.nodeName);
-          return { success: true };
-        } finally {
-          setIsCreating(false);
-        }
-      },
-      undefined, // No additional validation needed
-      {
-        errorMessage: `Failed to create ${nodeType === 'ou' ? 'organizational unit' : 'account'}`,
-        clearValidationOnSuccess: true,
-        showSuccessToast: false, // Visual feedback from the new node appearing is sufficient
-      }
-    );
-
-    if (result) {
+    setIsCreating(true);
+    try {
+      addNode(parentNode.id, nodeType, formValidation.values.nodeName.trim());
+      clearValidationErrors();
       formValidation.reset();
       onSuccess?.();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      toast.error(`Failed to create ${nodeType === 'ou' ? 'organizational unit' : 'account'}`, {
+        description: message,
+      });
+    } finally {
+      setIsCreating(false);
     }
   };
 

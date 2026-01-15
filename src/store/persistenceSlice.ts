@@ -62,7 +62,6 @@ export const createPersistenceSlice: StateCreator<
         description: `Organization "${organization.name}" has been exported successfully.`
       });
     } catch (error) {
-      console.error('Failed to export organization:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       set({ saveError: 'Failed to export organization' });
       
@@ -159,7 +158,6 @@ export const createPersistenceSlice: StateCreator<
       
       return true;
     } catch (error) {
-      console.error('Failed to import organization:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       set({ saveError: `Failed to import organization: ${errorMessage}` });
       
@@ -197,7 +195,6 @@ export const createPersistenceSlice: StateCreator<
     const persistenceManager = getPersistenceManager();
     persistenceManager.setOrganizationVersion('1.0');
     persistenceManager.clearLocalStorage();
-    console.log('🗑️ Cleared localStorage and reset application state');
     
     // Show success notification unless silent
     if (!silent) {
@@ -291,24 +288,16 @@ export const createPersistenceSlice: StateCreator<
 
         // Rebuild Policy Data Cache from loaded source data
         get().refreshAllNodesPolicyData();
-        
-        console.log('✅ Successfully restored state from localStorage:', {
-          organizationName: storedState.organization.name,
-          nodeCount: Object.keys(storedState.organization.nodes).length,
-          policyCount: Object.keys(finalPolicies).length,
-          version: storedState.version
-        });
       } else {
         // No stored state, just mark as initialized
-        console.log('ℹ️ No stored state found in localStorage - starting fresh');
         set({ 
           isInitialized: true,
           tutorialCompleted,
         });
       }
-    } catch (error) {
-      console.error('Failed to initialize from localStorage:', error);
-      set({ isInitialized: true }); // Mark as initialized even if failed
+    } catch {
+      // Mark as initialized even if failed - localStorage errors are non-critical
+      set({ isInitialized: true });
     }
   },
 
@@ -323,11 +312,6 @@ export const createPersistenceSlice: StateCreator<
     try {
       const persistenceManager = getPersistenceManager();
       persistenceManager.saveToLocalStorage(organization, policies, policyAttachments);
-      console.log('💾 Auto-saved to localStorage:', {
-        organizationName: organization?.name || 'None',
-        nodeCount: organization ? Object.keys(organization.nodes).length : 0,
-        policyCount: Object.keys(policies).length
-      });
     } catch (error) {
       console.warn('❌ Failed to save to localStorage:', error);
       // Don't show user error for localStorage failures

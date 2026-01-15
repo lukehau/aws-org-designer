@@ -3,24 +3,38 @@
  * Main interface for managing policies with Create/View/Edit functionality
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { JsonEditor } from '@/components/ui/json-editor';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { ValidationMessage } from '@/components/ui/form-validation';
-import { Edit, Plus, Trash2 } from 'lucide-react';
+import { Edit, Plus, Trash2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useAppStore } from '@/store';
+import { useStore } from '@/store';
 import type { OrganizationNode } from '@/types/organization';
 import type { Policy, PolicyType } from '@/types/policy';
 import { PolicyFileTree } from './PolicyFileTree';
 import { getPolicyConfig, getPolicyDisplayName } from '@/config/policyConfig';
+
+// Lazy load the JsonEditor component (CodeMirror is ~333KB)
+const JsonEditor = lazy(() => import('@/components/ui/json-editor').then(m => ({ default: m.JsonEditor })));
+
+// Loading fallback for the editor
+function EditorLoadingFallback() {
+  return (
+    <div className="flex items-center justify-center h-[250px] rounded-md border border-input bg-card">
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        <span>Loading editor...</span>
+      </div>
+    </div>
+  );
+}
 
 interface PolicyTabProps {
   selectedNode?: OrganizationNode | null;
@@ -49,7 +63,7 @@ export function PolicyTab({ selectedNode }: PolicyTabProps) {
 
   const handleDeleteConfirm = () => {
     if (policyToDelete) {
-      const { deletePolicy } = useAppStore.getState();
+      const { deletePolicy } = useStore.getState();
       deletePolicy(policyToDelete.id);
 
       // Show success toast
@@ -152,7 +166,7 @@ function PolicyCreateForm({ onSuccess }: PolicyCreateFormProps) {
   const [jsonError, setJsonError] = useState<string | null>(null);
   const [nameError, setNameError] = useState<string | null>(null);
 
-  const { createPolicy, validatePolicyName } = useAppStore();
+  const { createPolicy, validatePolicyName } = useStore();
   const config = getPolicyConfig(policyType);
 
   // Update content when policy type changes
@@ -185,7 +199,7 @@ function PolicyCreateForm({ onSuccess }: PolicyCreateFormProps) {
     try {
       JSON.parse(content);
       setJsonError(null);
-    } catch (error) {
+    } catch {
       setJsonError('Policy document must be valid JSON');
     }
   }, [content]);
@@ -208,8 +222,8 @@ function PolicyCreateForm({ onSuccess }: PolicyCreateFormProps) {
       });
 
       onSuccess();
-    } catch (error) {
-      console.error(`Failed to create ${config.abbreviation}:`, error);
+    } catch {
+      console.error(`Failed to create ${config.abbreviation}`);
       // TODO: Add proper error handling
     } finally {
       setIsCreating(false);
@@ -262,13 +276,15 @@ function PolicyCreateForm({ onSuccess }: PolicyCreateFormProps) {
 
       <div className="space-y-2">
         <Label htmlFor="policy-content">Policy Document (JSON)</Label>
-        <JsonEditor
-          id="policy-content"
-          value={content}
-          onChange={setContent}
-          placeholder="Enter JSON policy document"
-          required
-        />
+        <Suspense fallback={<EditorLoadingFallback />}>
+          <JsonEditor
+            id="policy-content"
+            value={content}
+            onChange={setContent}
+            placeholder="Enter JSON policy document"
+            required
+          />
+        </Suspense>
       </div>
 
       {/* JSON Validation Error */}
@@ -306,7 +322,7 @@ export function PolicyViewer({ policy, onDeletePolicy, onClose }: PolicyViewerPr
   const [jsonError, setJsonError] = useState<string | null>(null);
   const [nameError, setNameError] = useState<string | null>(null);
   const config = getPolicyConfig(policy.type);
-  const { updatePolicy, validatePolicyName } = useAppStore();
+  const { updatePolicy, validatePolicyName } = useStore();
 
   // Check if this is a default policy
   const isDefaultPolicy = policy.id === 'default-scp-full-access' || policy.id === 'default-rcp-full-access';
@@ -361,7 +377,7 @@ export function PolicyViewer({ policy, onDeletePolicy, onClose }: PolicyViewerPr
     try {
       JSON.parse(editContent);
       setJsonError(null);
-    } catch (error) {
+    } catch {
       setJsonError('Policy document must be valid JSON');
     }
   }, [editContent, isEditing]);
@@ -394,8 +410,8 @@ export function PolicyViewer({ policy, onDeletePolicy, onClose }: PolicyViewerPr
 
       // Close the dialog
       onClose();
-    } catch (error) {
-      console.error('Invalid JSON or save failed:', error);
+    } catch {
+      console.error('Invalid JSON or save failed');
       toast.error('Save Failed', {
         description: 'Invalid JSON format or save operation failed.'
       });
@@ -480,13 +496,15 @@ export function PolicyViewer({ policy, onDeletePolicy, onClose }: PolicyViewerPr
       {/* Policy Content */}
       <div>
         <Label className="text-xs text-muted-foreground">Policy Document</Label>
-        <JsonEditor
-          value={isEditing && !isDefaultPolicy ? editContent : formattedContent}
-          onChange={setEditContent}
-          readOnly={!isEditing || isDefaultPolicy}
-          placeholder="Enter JSON policy document"
-          className="mt-2"
-        />
+        <Suspense fallback={<EditorLoadingFallback />}>
+          <JsonEditor
+            value={isEditing && !isDefaultPolicy ? editContent : formattedContent}
+            onChange={setEditContent}
+            readOnly={!isEditing || isDefaultPolicy}
+            placeholder="Enter JSON policy document"
+            className="mt-2"
+          />
+        </Suspense>
       </div>
 
       {/* Validation Errors */}

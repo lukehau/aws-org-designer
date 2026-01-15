@@ -17,7 +17,7 @@ import {
   Plus,
   X
 } from "lucide-react";
-import { useAppStore } from "@/store";
+import { useStore } from "@/store";
 import type { OrganizationNode as OrgNodeType, Organization } from "@/types/organization";
 
 interface NodeData {
@@ -49,7 +49,7 @@ export const OrganizationNode = memo(({ data, selected }: NodeProps) => {
     allNodesPolicyData,
     inheritanceTrailCache,
     refreshInheritanceTrailCache
-  } = useAppStore();
+  } = useStore();
 
   // Local state for inline editing
   const [isEditing, setIsEditing] = useState(false);

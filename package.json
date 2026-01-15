@@ -12,18 +12,14 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "electron:dev": "electron-vite dev",
-    "electron:build": "electron-vite build",
-    "electron:preview": "electron-vite preview",
-    "electron:pack": "electron-vite build && electron-builder --dir",
-    "electron:release": "electron-vite build && electron-builder --publish always",
-    "electron:release:mac": "electron-vite build && electron-builder --mac --publish always",
-    "electron:release:win": "electron-vite build && electron-builder --win --publish always",
-    "cdk:install": "cd cdk && npm install",
-    "cdk:synth:dev": "cd cdk && npm run synth:dev",
-    "cdk:synth:prod": "cd cdk && npm run synth:prod",
-    "cdk:deploy:dev": "cd cdk && npm run deploy:dev",
-    "cdk:deploy:prod": "cd cdk && npm run deploy:prod"
+    "electron:build:mac": "electron-vite build && electron-builder --mac --publish never",
+    "electron:build:win": "electron-vite build && electron-builder --win --publish never",
+    "electron:release:mac": "electron-vite build && electron-builder --mac --publish onTagOrDraft",
+    "electron:release:win": "electron-vite build && electron-builder --win --publish onTagOrDraft"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.2",
@@ -34,13 +30,11 @@
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-popover": "^1.1.15",
-    "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-radio-group": "^1.3.8",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.2.6",
-    "@radix-ui/react-toast": "^1.2.15",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tailwindcss/postcss": "^4.1.12",
     "@tailwindcss/vite": "^4.1.12",
@@ -60,7 +54,6 @@
     "lucide-react": "^0.562.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-window-infinite-loader": "^1.0.10",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
@@ -68,6 +61,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@types/jsdom": "^27.0.0",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.0",
@@ -76,18 +70,28 @@
     "electron-builder": "^26.4.0",
     "electron-vite": "^5.0.0",
     "eslint": "^9.33.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.3.0",
+    "fast-check": "^4.5.3",
+    "globals": "^17.0.0",
+    "jsdom": "^27.4.0",
     "postcss": "^8.5.6",
     "rollup-plugin-visualizer": "^6.0.5",
     "tailwindcss": "^4.1.12",
-    "typescript": "~5.8.3",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2",
-    "vite-plugin-svgr": "^4.5.0"
+    "vite-plugin-svgr": "^4.5.0",
+    "vitest": "^4.0.17"
   },
   "overrides": {
     "tmp": "^0.2.3"
+  },
+  "optionalDependencies": {
+    "@esbuild/linux-x64": "0.27.2",
+    "@esbuild/win32-x64": "0.27.2",
+    "@rollup/rollup-linux-x64-gnu": "4.55.1",
+    "@rollup/rollup-linux-x64-musl": "4.55.1",
+    "@rollup/rollup-win32-x64-msvc": "4.55.1"
   }
 }

@@ -106,65 +106,6 @@ export const FieldValidation: React.FC<FieldValidationProps> = ({
 };
 
 /**
- * Props for form validation summary
- */
-interface FormValidationSummaryProps {
-  errors: string[];
-  warnings?: string[];
-  className?: string;
-  title?: string;
-}
-
-/**
- * Form validation summary component
- */
-export const FormValidationSummary: React.FC<FormValidationSummaryProps> = ({
-  errors,
-  warnings = [],
-  className,
-  title = 'Please fix the following issues:',
-}) => {
-  if (errors.length === 0 && warnings.length === 0) {
-    return null;
-  }
-
-  return (
-    <div
-      className={cn(
-        'border rounded-lg p-4 bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800',
-        className
-      )}
-    >
-      <div className="flex items-center gap-2 mb-3">
-        <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
-        <h4 className="font-medium text-red-900 dark:text-red-300">{title}</h4>
-      </div>
-      
-      {errors.length > 0 && (
-        <div className="mb-3">
-          <ul className="list-disc list-inside space-y-1 text-sm text-red-700 dark:text-red-300">
-            {errors.map((error, index) => (
-              <li key={index}>{error}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-      
-      {warnings.length > 0 && (
-        <div>
-          <h5 className="font-medium text-orange-900 mb-1">Warnings:</h5>
-          <ul className="list-disc list-inside space-y-1 text-sm text-orange-700">
-            {warnings.map((warning, index) => (
-              <li key={index}>{warning}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-};
-
-/**
  * Props for validation status indicator
  */
 interface ValidationStatusProps {
@@ -215,15 +156,15 @@ export const ValidationStatus: React.FC<ValidationStatusProps> = ({
 /**
  * Hook for managing form validation state
  */
-export const useFormValidation = <T extends Record<string, any>>(
+export const useFormValidation = <T extends Record<string, unknown>>(
   initialValues: T,
-  validationRules: Record<keyof T, (value: any) => string | null>
+  validationRules: Record<keyof T, (value: T[keyof T]) => string | null>
 ) => {
   const [values, setValues] = React.useState<T>(initialValues);
   const [errors, setErrors] = React.useState<Record<keyof T, string | null>>({} as Record<keyof T, string | null>);
   const [touched, setTouchedState] = React.useState<Record<keyof T, boolean>>({} as Record<keyof T, boolean>);
 
-  const validateField = React.useCallback((field: keyof T, value: any) => {
+  const validateField = React.useCallback((field: keyof T, value: T[keyof T]) => {
     const rule = validationRules[field];
     if (rule) {
       return rule(value);
@@ -248,7 +189,7 @@ export const useFormValidation = <T extends Record<string, any>>(
     return isValid;
   }, [values, validateField]);
 
-  const setValue = React.useCallback((field: keyof T, value: any) => {
+  const setValue = React.useCallback((field: keyof T, value: T[keyof T]) => {
     setValues(prev => ({ ...prev, [field]: value }));
     
     // Validate field if it has been touched

@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Edit, Save, X } from 'lucide-react';
-import { useAppStore } from '@/store';
+import { useStore } from '@/store';
 import type { OrganizationNode } from '@/types/organization';
 
 interface NodeEditInterfaceProps {
@@ -26,7 +26,7 @@ export function NodeEditInterface({
   const [nodeName, setNodeName] = useState(node.name);
   const [isUpdating, setIsUpdating] = useState(false);
   
-  const { updateNode } = useAppStore();
+  const { updateNode } = useStore();
 
   const canSave = nodeName.trim() && nodeName.trim() !== node.name;
 
