@@ -6,6 +6,16 @@ import path from 'path'
 updater.autoUpdater.autoDownload = false
 updater.autoUpdater.autoInstallOnAppQuit = false
 
+// Updater logging helper
+const logUpdater = (message: string, data?: unknown) => {
+  const timestamp = new Date().toISOString()
+  if (data !== undefined) {
+    console.log(`[Updater ${timestamp}] ${message}`, data)
+  } else {
+    console.log(`[Updater ${timestamp}] ${message}`)
+  }
+}
+
 // Update state for menu
 type UpdateState = 'idle' | 'checking' | 'downloading' | 'up-to-date' | 'ready' | 'error'
 let updateState: UpdateState = 'idle'
@@ -81,43 +91,52 @@ if (!gotTheLock) {
   // Check for updates on launch (only in packaged app)
   const checkForUpdates = async () => {
     if (!app.isPackaged) {
-      console.log('Skipping update check in development mode')
+      logUpdater('Skipping update check in development mode')
       return
     }
 
+    logUpdater(`Current version: ${app.getVersion()}`)
+    logUpdater('Starting update check...')
     setUpdateState('checking')
     createMenu()
 
     try {
-      console.log('Checking for updates...')
-      await updater.autoUpdater.checkForUpdates()
+      const result = await updater.autoUpdater.checkForUpdates()
+      logUpdater('Check completed', { updateInfo: result?.updateInfo?.version })
     } catch (error) {
-      console.error('Error checking for updates:', error)
+      logUpdater('Error checking for updates:', error)
       setUpdateState('error', true)
       createMenu()
     }
   }
 
   // Auto-updater event handlers
+  updater.autoUpdater.on('checking-for-update', () => {
+    logUpdater('Checking for update...')
+  })
+
   updater.autoUpdater.on('update-available', (info) => {
-    console.log(`Update available: ${info.version}`)
+    logUpdater(`Update available: ${info.version} (current: ${app.getVersion()})`, {
+      releaseDate: info.releaseDate,
+      releaseName: info.releaseName
+    })
     setUpdateState('downloading')
     createMenu()
     updater.autoUpdater.downloadUpdate()
   })
 
-  updater.autoUpdater.on('update-not-available', () => {
-    console.log('No updates available')
+  updater.autoUpdater.on('update-not-available', (info) => {
+    logUpdater(`No update available (latest: ${info.version}, current: ${app.getVersion()})`)
     setUpdateState('up-to-date', true)
     createMenu()
   })
 
   updater.autoUpdater.on('download-progress', (progress) => {
-    console.log(`Download progress: ${progress.percent.toFixed(1)}%`)
+    logUpdater(`Download progress: ${progress.percent.toFixed(1)}% (${(progress.transferred / 1024 / 1024).toFixed(1)}MB / ${(progress.total / 1024 / 1024).toFixed(1)}MB)`)
   })
 
   updater.autoUpdater.on('update-downloaded', (info) => {
-    console.log(`Update downloaded: ${info.version}`)
+    logUpdater(`Update downloaded: ${info.version}`, { releaseDate: info.releaseDate })
     setUpdateState('ready')
     createMenu()
     
@@ -132,13 +151,16 @@ if (!gotTheLock) {
       cancelId: 1
     }).then(({ response }) => {
       if (response === 0) {
+        logUpdater('User chose to restart and install')
         updater.autoUpdater.quitAndInstall(false, true)
+      } else {
+        logUpdater('User deferred update installation')
       }
     })
   })
 
   updater.autoUpdater.on('error', (error) => {
-    console.error('Auto-updater error:', error)
+    logUpdater('Error:', error)
     setUpdateState('error', true)
     createMenu()
   })
