@@ -1,43 +1,114 @@
-import { app, BrowserWindow, shell, Menu, dialog } from 'electron'
-import updater from 'electron-updater'
+import { app, BrowserWindow, shell, Menu, ipcMain } from 'electron'
 import path from 'path'
 
-// Disable auto-download - we'll control the flow manually
-updater.autoUpdater.autoDownload = false
-updater.autoUpdater.autoInstallOnAppQuit = false
+// Check for --debug flag
+const isDebugMode = process.argv.includes('--debug')
 
-// Updater logging helper
-const logUpdater = (message: string, data?: unknown) => {
+// Logging helper (only logs when --debug flag is passed)
+const log = (message: string, data?: unknown) => {
+  if (!isDebugMode) return
   const timestamp = new Date().toISOString()
   if (data !== undefined) {
-    console.log(`[Updater ${timestamp}] ${message}`, data)
+    console.log(`[Main ${timestamp}] ${message}`, data)
   } else {
-    console.log(`[Updater ${timestamp}] ${message}`)
+    console.log(`[Main ${timestamp}] ${message}`)
   }
 }
 
-// Update state for menu
-type UpdateState = 'idle' | 'checking' | 'downloading' | 'up-to-date' | 'ready' | 'error'
-let updateState: UpdateState = 'idle'
-let updateResetTimeout: NodeJS.Timeout | null = null
+// Update check state
+let isCheckingForUpdates = false
+let mainWindow: BrowserWindow | null = null
 
-// Helper to set update state with optional auto-reset
-const setUpdateState = (state: UpdateState, autoReset = false) => {
-  if (updateResetTimeout) {
-    clearTimeout(updateResetTimeout)
-    updateResetTimeout = null
-  }
-  updateState = state
-  if (autoReset) {
-    updateResetTimeout = setTimeout(() => {
-      updateState = 'idle'
-      createMenu()
-    }, 60000)
-  }
-}
-
-// Forward declaration for createMenu (defined inside gotTheLock block)
+// Forward declaration for createMenu
 let createMenu: () => void
+
+// GitHub releases API URL
+const GITHUB_RELEASES_URL = 'https://api.github.com/repos/lukehau/aws-org-designer/releases/latest'
+
+// Compare version strings (returns true if remote is newer)
+const isNewerVersion = (current: string, remote: string): boolean => {
+  // Strip 'v' prefix if present
+  const currentClean = current.replace(/^v/, '')
+  const remoteClean = remote.replace(/^v/, '')
+  
+  const currentParts = currentClean.split('.').map(Number)
+  const remoteParts = remoteClean.split('.').map(Number)
+  
+  for (let i = 0; i < Math.max(currentParts.length, remoteParts.length); i++) {
+    const curr = currentParts[i] || 0
+    const rem = remoteParts[i] || 0
+    if (rem > curr) return true
+    if (rem < curr) return false
+  }
+  return false
+}
+
+// Check for updates via GitHub releases API
+const checkForUpdates = async (silent = false) => {
+  if (!app.isPackaged) {
+    log('Skipping update check in development mode')
+    return
+  }
+
+  if (isCheckingForUpdates) {
+    log('Update check already in progress')
+    return
+  }
+
+  isCheckingForUpdates = true
+  createMenu()
+
+  const currentVersion = app.getVersion()
+  log(`Current version: ${currentVersion}`)
+  log('Checking for updates...')
+
+  try {
+    const response = await fetch(GITHUB_RELEASES_URL, {
+      headers: {
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'AWS-Org-Designer'
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error(`GitHub API returned ${response.status}`)
+    }
+
+    const release = await response.json()
+    const remoteVersion = release.tag_name
+    const releaseUrl = release.html_url
+
+    log(`Latest version: ${remoteVersion}`)
+
+    if (isNewerVersion(currentVersion, remoteVersion)) {
+      log('Update available')
+      mainWindow?.webContents.send('update-result', {
+        status: 'available',
+        version: remoteVersion,
+        releaseUrl
+      })
+    } else {
+      log('Already up to date')
+      // Only show "up to date" toast if manually triggered
+      if (!silent) {
+        mainWindow?.webContents.send('update-result', {
+          status: 'up-to-date'
+        })
+      }
+    }
+  } catch (error) {
+    log('Update check failed:', error)
+    // Only show error toast if manually triggered
+    if (!silent) {
+      mainWindow?.webContents.send('update-result', {
+        status: 'error'
+      })
+    }
+  } finally {
+    isCheckingForUpdates = false
+    createMenu()
+  }
+}
 
 // Single instance lock - prevent multiple instances of the app
 const gotTheLock = app.requestSingleInstanceLock()
@@ -45,8 +116,6 @@ const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
   app.quit()
 } else {
-  let mainWindow: BrowserWindow | null = null
-
   const createWindow = () => {
     mainWindow = new BrowserWindow({
       width: 1200,
@@ -88,81 +157,19 @@ if (!gotTheLock) {
     }
   }
 
-  // Check for updates on launch (only in packaged app)
-  const checkForUpdates = async () => {
-    if (!app.isPackaged) {
-      logUpdater('Skipping update check in development mode')
-      return
+  // IPC handlers
+  ipcMain.on('check-for-updates', () => {
+    checkForUpdates(false)
+  })
+
+  ipcMain.on('open-external', (_event, url: string) => {
+    if (url.startsWith('https://') || url.startsWith('http://')) {
+      shell.openExternal(url)
     }
-
-    logUpdater(`Current version: ${app.getVersion()}`)
-    logUpdater('Starting update check...')
-    setUpdateState('checking')
-    createMenu()
-
-    try {
-      const result = await updater.autoUpdater.checkForUpdates()
-      logUpdater('Check completed', { updateInfo: result?.updateInfo?.version })
-    } catch (error) {
-      logUpdater('Error checking for updates:', error)
-      setUpdateState('error', true)
-      createMenu()
-    }
-  }
-
-  // Auto-updater event handlers
-  updater.autoUpdater.on('checking-for-update', () => {
-    logUpdater('Checking for update...')
   })
 
-  updater.autoUpdater.on('update-available', (info) => {
-    logUpdater(`Update available: ${info.version} (current: ${app.getVersion()})`, {
-      releaseDate: info.releaseDate,
-      releaseName: info.releaseName
-    })
-    setUpdateState('downloading')
-    createMenu()
-    updater.autoUpdater.downloadUpdate()
-  })
-
-  updater.autoUpdater.on('update-not-available', (info) => {
-    logUpdater(`No update available (latest: ${info.version}, current: ${app.getVersion()})`)
-    setUpdateState('up-to-date', true)
-    createMenu()
-  })
-
-  updater.autoUpdater.on('download-progress', (progress) => {
-    logUpdater(`Download progress: ${progress.percent.toFixed(1)}% (${(progress.transferred / 1024 / 1024).toFixed(1)}MB / ${(progress.total / 1024 / 1024).toFixed(1)}MB)`)
-  })
-
-  updater.autoUpdater.on('update-downloaded', (info) => {
-    logUpdater(`Update downloaded: ${info.version}`, { releaseDate: info.releaseDate })
-    setUpdateState('ready')
-    createMenu()
-    
-    // Prompt user to install
-    dialog.showMessageBox({
-      type: 'info',
-      title: 'Update Ready',
-      message: `Version ${info.version} has been downloaded.`,
-      detail: 'The update will be installed when you restart the app.',
-      buttons: ['Restart Now', 'Later'],
-      defaultId: 0,
-      cancelId: 1
-    }).then(({ response }) => {
-      if (response === 0) {
-        logUpdater('User chose to restart and install')
-        updater.autoUpdater.quitAndInstall(false, true)
-      } else {
-        logUpdater('User deferred update installation')
-      }
-    })
-  })
-
-  updater.autoUpdater.on('error', (error) => {
-    logUpdater('Error:', error)
-    setUpdateState('error', true)
-    createMenu()
+  ipcMain.handle('get-app-version', () => {
+    return app.getVersion()
   })
 
   // Someone tried to run a second instance, focus our window instead
@@ -179,26 +186,11 @@ if (!gotTheLock) {
   createMenu = () => {
     const isMac = process.platform === 'darwin'
 
-    // Build update menu item based on state
-    const getUpdateMenuItem = (): Electron.MenuItemConstructorOptions => {
-      switch (updateState) {
-        case 'checking':
-          return { label: 'Checking for Updates...', enabled: false }
-        case 'downloading':
-          return { label: 'Downloading Update...', enabled: false }
-        case 'up-to-date':
-          return { label: "You're up to date!", enabled: false }
-        case 'ready':
-          return { 
-            label: 'Restart to Update', 
-            click: () => updater.autoUpdater.quitAndInstall(false, true)
-          }
-        case 'error':
-          return { label: 'Unavailable', enabled: false }
-        default:
-          return { label: 'Check for Updates', click: checkForUpdates }
-      }
-    }
+    const getUpdateMenuItem = (): Electron.MenuItemConstructorOptions => ({
+      label: isCheckingForUpdates ? 'Checking for Updates...' : 'Check for Updates',
+      enabled: !isCheckingForUpdates,
+      click: () => checkForUpdates(false)
+    })
 
     const template: Electron.MenuItemConstructorOptions[] = [
       // App menu (macOS only)
@@ -262,15 +254,17 @@ if (!gotTheLock) {
     app.setAboutPanelOptions({
       applicationName: 'AWS Org Designer',
       applicationVersion: app.getVersion(),
-      copyright: '© 2025 Luke Hau',
+      copyright: '© 2025 Luke Harris',
       website: 'https://github.com/lukehau/aws-org-designer'
     })
 
     createMenu()
     createWindow()
 
-    // Check for updates after window is created
-    checkForUpdates()
+    // Check for updates after app settles (5 second delay, silent mode)
+    setTimeout(() => {
+      checkForUpdates(true)
+    }, 5000)
 
     // On macOS, re-create window when dock icon is clicked and no windows are open
     app.on('activate', () => {

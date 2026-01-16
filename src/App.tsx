@@ -15,6 +15,9 @@ import 'driver.js/dist/driver.css'
 // Import custom Driver.js theme
 import '@/styles/driver-theme.css'
 
+// Import types for Electron API
+import type { UpdateResult } from '@/types/electron'
+
 function App() {
   
   const { 
@@ -31,6 +34,39 @@ function App() {
   useEffect(() => {
     initializeFromLocalStorage()
   }, [initializeFromLocalStorage])
+
+  // Listen for update results from Electron (desktop only)
+  useEffect(() => {
+    if (!window.electronAPI) return
+
+    const handleUpdateResult = (result: UpdateResult) => {
+      switch (result.status) {
+        case 'available':
+          toast.info('Update Available', {
+            description: `A new version (${result.version}) is available`,
+            duration: Infinity,
+            action: {
+              label: 'Download',
+              onClick: () => {
+                if (result.releaseUrl) {
+                  window.electronAPI?.openExternal(result.releaseUrl)
+                }
+              }
+            },
+          })
+          break
+        case 'up-to-date':
+          toast.success("You're up to date!")
+          break
+        case 'error':
+          toast.error('Update check failed')
+          break
+      }
+    }
+
+    const cleanup = window.electronAPI.onUpdateResult(handleUpdateResult)
+    return cleanup
+  }, [])
 
   // Handle window resize for responsive sidebar behavior
   useEffect(() => {

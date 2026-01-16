@@ -93,6 +93,7 @@ jobs:
       - name: Build and release for macOS
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
         run: npm run electron:release:mac
 
   release-win:
@@ -113,6 +114,7 @@ jobs:
       - name: Build and release for Windows
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
         run: npm run electron:release:win
 
   publish-release:
