@@ -77,7 +77,7 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
 
   return (
     <header className="border-b bg-card">
-      <div className="px-4 sm:px-6 py-4">
+      <div className="px-4 sm:px-6 py-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 min-w-0">
             {/* Mobile menu button - far left */}
@@ -102,11 +102,9 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
             </picture>
             <div className="min-w-0">
               <h1 className="text-lg sm:text-xl font-semibold truncate">AWS Organization Designer</h1>
-              {organization && (
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  {organization.name} - v{getOrganizationVersion()}
-                </p>
-              )}
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                {organization ? `${organization.name} - v${getOrganizationVersion()}` : '\u00A0'}
+              </p>
             </div>
           </div>
 
